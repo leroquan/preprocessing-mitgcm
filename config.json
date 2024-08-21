@@ -1,0 +1,33 @@
+{
+  "current_project": {
+    "config_name": "geneva_100m",
+    "start_date": "20240301",
+    "end_date": "20240302",
+    "weather_model": "cosmo"
+  },
+  "simulation_config": {
+    "geneva_100m": {
+      "grid_resolution": 100,
+      "x0_ch1903": 500000,
+      "y0_ch1903": 116500,
+      "x1_ch1903": 563000,
+      "y1_ch1903": 138700,
+      "Nx": 672,
+      "Ny": 264,
+      "grid_folder_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\data\\grid\\100m",
+      "bathy_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\Instructions Fazel\\binary_data\\template_bathymetry\\bathyGeneva_100m.bin",
+      "swiss_topo_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\data\\swissbathy3d_lacleman_2056_5728_esriasciigrid",
+      "bin_surf_forcings_folder_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\data\\binary_surf_forcings"
+    }
+  },
+  "weather_model_config": {
+    "icon": {
+      "base_url": "https://alplakes-internal-api.eawag.ch/meteoswiss/icon/area/reanalysis/kenda-ch1",
+      "raw_results_from_api_folder": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\data\\ICON reanalysis\\raw_from_alplakes_api"
+    },
+    "cosmo": {
+      "base_url": "https://alplakes-internal-api.eawag.ch/meteoswiss/cosmo/area/reanalysis/VNXQ34",
+      "raw_results_from_api_folder": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\data\\COSMO reanalysis\\raw_from_alplakes_api"
+    }
+  }
+}
