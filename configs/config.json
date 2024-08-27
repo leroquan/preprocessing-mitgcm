@@ -1,9 +1,10 @@
 {
   "current_project": {
-    "config_name": "geneva_100m",
-    "start_date": "20240301",
-    "end_date": "20240302",
-    "weather_model": "cosmo"
+    "config_name": "geneva_50m",
+    "start_date": "20240801",
+    "end_date": "20240803",
+    "weather_model": "icon",
+    "computer_config": "cscs_geneva"
   },
   "simulation_config": {
     "geneva_100m": {
@@ -15,8 +16,24 @@
       "Nx": 672,
       "Ny": 264,
       "lake_altitude": 372,
+      "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\data\\grid\\z-grid\\dz_geneva.csv",
       "grid_folder_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\data\\grid\\100m",
       "bathy_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\Instructions Fazel\\binary_data\\template_bathymetry\\bathyGeneva_100m.bin",
+      "swiss_topo_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\data\\swissbathy3d_lacleman_2056_5728_esriasciigrid",
+      "bin_surf_forcings_folder_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\data\\binary_surf_forcings"
+    },
+    "geneva_50m": {
+      "grid_resolution": 50,
+      "x0_ch1903": 500000,
+      "y0_ch1903": 116500,
+      "x1_ch1903": 563000,
+      "y1_ch1903": 138700,
+      "Nx": 1344,
+      "Ny": 528,
+      "lake_altitude": 372,
+      "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\data\\grid\\z-grid\\dz_geneva.csv",
+      "grid_folder_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\data\\grid\\50m",
+      "bathy_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\data\\grid\\50m\\bathy_geneva_50m_big_endian.bin",
       "swiss_topo_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\data\\swissbathy3d_lacleman_2056_5728_esriasciigrid",
       "bin_surf_forcings_folder_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\data\\binary_surf_forcings"
     }
@@ -29,6 +46,18 @@
     "cosmo": {
       "base_url": "https://alplakes-internal-api.eawag.ch/meteoswiss/cosmo/area/reanalysis/VNXQ34",
       "raw_results_from_api_folder": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\data\\COSMO reanalysis\\raw_from_alplakes_api"
+    }
+  },
+  "computer_config": {
+    "cscs_geneva": {
+      "Px": 48,
+      "Py": 12,
+      "endian_type": "little_endian"
+    },
+    "kball-laken_geneva": {
+      "Px": 12,
+      "Py": 3,
+      "endian_type": "big_endian"
     }
   }
 }
