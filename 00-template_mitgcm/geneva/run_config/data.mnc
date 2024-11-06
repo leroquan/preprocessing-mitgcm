@@ -7,7 +7,7 @@
  pickup_write_mnc = .TRUE.
  monitor_mnc      = .TRUE.
  pickup_read_mnc  = .TRUE.
- readgrid_mnc     = .FALSE.
- 
+ readgrid_mnc     = .TRUE.
+ mnc_use_outdir	  = .FALSE.
  &
 

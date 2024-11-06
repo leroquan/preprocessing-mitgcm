@@ -99,7 +99,7 @@
  pickupSuff          = ""
 
 # 172800.0
- pChkptFreq=21600.0,
+ pChkptFreq=43200.0,
  chkptFreq=0.0,
  &
 
