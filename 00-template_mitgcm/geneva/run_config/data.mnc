@@ -9,5 +9,6 @@
  pickup_read_mnc  = .TRUE.
  readgrid_mnc     = .TRUE.
  mnc_use_outdir	  = .FALSE.
+ writegrid_mnc    = .FALSE.
  &
 
