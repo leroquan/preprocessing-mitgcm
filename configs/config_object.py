@@ -5,7 +5,6 @@ class Paths:
         self.grid_folder_path = config['grid_folder_path']
         self.dz_grid_csv_path = config['dz_grid_csv_path']
         self.bathy_path = config['bathy_path']
-        self.bin_surf_forcings_folder_path = config['bin_surf_forcings_folder_path']
         self.raw_results_from_api_folder = weather_model_config['raw_results_from_api_folder']
 
 class ConfigObject:
@@ -47,6 +46,8 @@ class ConfigObject:
 
         # Weather model
         self.weather_api_base_url = weather_model_config['base_url']
+        self.weather_download_buffer = weather_model_config['buffer']
+        self.weather_model_type = weather_model_config['type']
 
         # Paths
         self.paths = Paths(config, weather_model_config)
