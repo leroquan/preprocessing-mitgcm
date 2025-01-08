@@ -4,15 +4,78 @@ import numpy as np
 import glob as glob
 import os
 from scipy.interpolate import griddata
+import requests
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
+from grid_and_bathy import MitgcmGrid
 
-class MitgcmGrid():
-    def __init__(self, path_grid):
-        self.x = np.load(os.path.join(path_grid, 'x.npy'))
-        self.y = np.load(os.path.join(path_grid, 'y.npy'))
-        self.lat_grid = np.load(os.path.join(path_grid, 'lat_grid.npy'))
-        self.lon_grid = np.load(os.path.join(path_grid, 'lon_grid.npy'))
+
+def download_weather_reanalysis(base_url, start_date, end_date, lat0, long0, lat1, long1, folder_path):
+    # Convert input dates to datetime objects
+    start_dt = datetime.strptime(start_date, "%Y%m%d")
+    end_dt = datetime.strptime(end_date, "%Y%m%d")
+
+    variables = ['T_2M', 'U', 'V', 'GLOB', 'RELHUM_2M', 'PMSL', 'CLCT', 'PS']
+    # Loop through each day within the range
+    current_date = start_dt
+    while current_date < end_dt:
+        next_date = current_date + timedelta(days=1)
+
+        if next_date > end_dt:
+            next_date = end_dt
+
+        # Format dates for the API request
+        start_window_str = current_date.strftime("%Y%m%d")
+        end_window_str = next_date.strftime("%Y%m%d")
+
+        for var in variables:
+            # Construct the API URL for each 1-day window
+            url = f"{base_url}/{start_window_str}/{end_window_str}/{lat0}/{long0}/{lat1}/{long1}?variables={var}"
+
+            # Save the data to a file with date range in the filename
+            file_name = f"{start_window_str}_{end_window_str}_{var}.json"
+            file_path = os.path.join(folder_path, file_name)
+
+            if os.path.isfile(file_path):
+                print(f"Data already exists: {file_path}")
+                continue
+
+            # Fetch data from the API
+            response = requests.get(url)
+
+            if response.status_code == 200:
+                with open(file_path, "w") as file:
+                    file.write(response.text)
+                    print(f"Saved data to {file_path}")
+            else:
+                print(
+                    f"Failed to fetch data for {start_window_str} to {end_window_str}. Error : {response.text}. url : {url}")
+
+        current_date = next_date
+
+
+def download_weather_forecast(base_url, start_date, lat0, long0, lat1, long1, folder_path):
+    # Convert input dates to datetime objects
+    start_dt = datetime.strptime(start_date, "%Y%m%d")
+    end_dt = start_dt + timedelta(days=4) #TO DO : change time window for different forecasts ?
+
+    variables = ['T_2M', 'U', 'V', 'GLOB', 'RELHUM_2M', 'PMSL', 'CLCT', 'PS']
+    for var in variables:
+        url = f'{base_url}/{start_dt.strftime("%Y%m%d")}/{lat0}/{long0}/{lat1}/{long1}?variables={var}'
+        # Fetch data from the API
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            # Save the data to a file with date range in the filename
+            file_name = f'{start_dt.strftime("%Y%m%d")}_{end_dt.strftime("%Y%m%d")}_{var}.json'
+            file_path = os.path.join(folder_path, file_name)
+
+            with open(file_path, "w") as file:
+                file.write(response.text)
+                print(f"Saved data to {file_path}")
+        else:
+            print(f"Failed to fetch data for {start_dt} to {end_dt}. Error : {response.text}. url : {url}")
+
 
 def write_binary(path_fname,data):
     '''
@@ -30,7 +93,7 @@ def write_binary(path_fname,data):
     fid.close()
 
 
-def interp_to_grid(json_file, data_type, mitgcm_grid):
+def interp_to_grid(json_file, data_type, mitgcm_grid: MitgcmGrid):
     '''
     json_file: path to json file
     data_type: string of parameter
@@ -38,11 +101,14 @@ def interp_to_grid(json_file, data_type, mitgcm_grid):
     '''
 
     with open(json_file, "r") as file:
-        data = json.load(file)
-        time = np.array(data).item().get('time')
-        lat = np.array(data['lat'])
-        lon = np.array(data['lng'])
-        data = np.array(data[data_type]['data'])
+        json_data = json.load(file)
+        time = np.array(json_data).item().get('time')
+        lat = np.array(json_data['lat'])
+        lon = np.array(json_data['lng'])
+        try:
+            data = np.array(json_data[data_type]['data'])
+        except KeyError:
+            data = np.array(json_data['variables'][data_type]['data'])
 
     data_interp = []
 
@@ -77,19 +143,21 @@ def filter_json_files_by_date(all_json_files: list[str], str_start_date: str, st
         start_date_json = datetime.strptime(json_dates[0], '%Y%m%d')
         end_date_json = datetime.strptime(json_dates[1], '%Y%m%d')
 
-        if (start_date_json >= start_date) & (start_date_json < end_date) & (end_date_json > start_date) & (
-                end_date_json <= end_date):
+        if (start_date_json >= start_date) & (start_date_json < end_date) & (end_date_json > start_date):
             filtered_json_files.append(file)
 
     return filtered_json_files
 
 
-def interp_concat_json(folder_json_path, data_type, str_start_date: str, str_end_date: str, mitgcm_grid: MitgcmGrid) \
-        -> xr.DataArray:
+def interp_concat_json(folder_json_path, data_type, str_start_date: str, str_end_date: str, mitgcm_grid: MitgcmGrid,
+                       weather_model_type: str = "") -> xr.DataArray:
     all_json_files = glob.glob(os.path.join(folder_json_path, f'*_{data_type}.json'))
     json_files = filter_json_files_by_date(all_json_files, str_start_date, str_end_date)
 
     all_data = []
+
+    if weather_model_type == "forecast":
+        data_type = data_type + "_MEAN"
 
     for file in json_files:
         data = interp_to_grid(file, data_type, mitgcm_grid)
@@ -98,17 +166,24 @@ def interp_concat_json(folder_json_path, data_type, str_start_date: str, str_end
     all_data = xr.concat(all_data, dim='T').sortby('T')
 
     # remove duplicate values - review download from COSMO
-    _, unique_ind = np.unique(np.unique(all_data['T'].values), return_index=True)
+    unique_values, unique_ind = np.unique(all_data['T'].values, return_index=True)
     unique_ind_sorted = np.sort(unique_ind)
-    all_data = all_data.isel(T=unique_ind_sorted)
+    all_data_cleaned = all_data.isel(T=unique_ind_sorted)
 
     # binary file for MITgcm should be in XYT
-    all_data = all_data.transpose('T', 'Y', 'X')
+    all_data_transposed = all_data_cleaned.transpose('T', 'Y', 'X')
 
-    return (all_data)
+    return (all_data_transposed)
 
 
 def calculate_specific_humidity(temp, relhum, atm_press):
+    """
+    Compute specific humidity from air temperature, relative humidity and atmospheric pressure.
+
+    - temp: Air temperature in Kelvin
+    - relhum: Relative humidity in %
+    - atm_press: Atmospheric pressure in Pascal
+    """
     # temp needs to be in celcius
     temp = temp - 273.15
 
@@ -150,37 +225,51 @@ def check_output_folder(output_folder_path):
         print(f"Directory '{output_folder_path}' created.")
 
 
-def extract_and_save_surface_forcings(output_folder_path, start_date, end_date, path_raw_weather_folder, path_grid):
+def extract_and_save_surface_forcings(output_folder_path, start_date, end_date, path_raw_weather_folder,
+                                      mitgcm_grid: MitgcmGrid, weather_model_type: str =""):
     check_output_folder(output_folder_path)
 
-    #load mitgcm model grid
-    mitgcm_grid = MitgcmGrid(path_grid)
-
     #extract wind speed
-    u10 = interp_concat_json(path_raw_weather_folder, 'U', start_date, end_date, mitgcm_grid)
-    v10 = interp_concat_json(path_raw_weather_folder, 'V', start_date, end_date, mitgcm_grid)
+    print('Interpolating u10 to grid...')
+    u10 = interp_concat_json(path_raw_weather_folder, 'U', start_date, end_date, mitgcm_grid, weather_model_type)
+    print(f'Saving u10 to file {os.path.join(output_folder_path, "u10.bin")}')
     write_binary(os.path.join(output_folder_path, 'u10.bin'), u10)
+    print('Interpolating v10 to grid...')
+    v10 = interp_concat_json(path_raw_weather_folder, 'V', start_date, end_date, mitgcm_grid, weather_model_type)
+    print(f'Saving v10 to file {os.path.join(output_folder_path, "v10.bin")}')
     write_binary(os.path.join(output_folder_path, 'v10.bin'), v10)
 
     #extract air temperature
-    atemp = interp_concat_json(path_raw_weather_folder, 'T_2M', start_date, end_date, mitgcm_grid)
+    print('Interpolating air temperature (atemp) to grid...')
+    atemp = interp_concat_json(path_raw_weather_folder, 'T_2M', start_date, end_date, mitgcm_grid, weather_model_type)
+    print(f'Saving atemp.')
     write_binary(os.path.join(output_folder_path, 'atemp.bin'), atemp)
 
     #extract surface pressure
-    apress = interp_concat_json(path_raw_weather_folder, 'PS', start_date, end_date, mitgcm_grid)
-    pmsl = interp_concat_json(path_raw_weather_folder, 'PMSL', start_date, end_date, mitgcm_grid)
+    print('Interpolating atmospheric pressure (apress) to grid...')
+    apress = interp_concat_json(path_raw_weather_folder, 'PS', start_date, end_date, mitgcm_grid, weather_model_type)
+    print(f'Saving apressure.')
     write_binary(os.path.join(output_folder_path, 'apressure.bin'), apress)
 
     #extract specific humidity
-    relhum = interp_concat_json(path_raw_weather_folder, 'RELHUM_2M', start_date, end_date, mitgcm_grid)
+    print('Interpolating relative humidity (relhum) to grid...')
+    relhum = interp_concat_json(path_raw_weather_folder, 'RELHUM_2M', start_date, end_date, mitgcm_grid, weather_model_type)
+    print('Computing specific humidity (aqh) from air temperature and cloud cover...')
     aqh = calculate_specific_humidity(atemp, relhum, apress)
+    print(f'Saving aqh.')
     write_binary(os.path.join(output_folder_path, 'aqh.bin'), aqh)
 
     #extract shortwave radiation
-    swr = interp_concat_json(path_raw_weather_folder, 'GLOB', start_date, end_date, mitgcm_grid)
-    write_binary(os.path.join(output_folder_path, 'swdown.bin'), swr)
+    print('Interpolating shortwave radiation (swdown) to grid...')
+    swr = interp_concat_json(path_raw_weather_folder, 'GLOB', start_date, end_date, mitgcm_grid, weather_model_type)
+    filled_swr = swr.fillna(0)
+    print(f'Saving swdown.')
+    write_binary(os.path.join(output_folder_path, 'swdown.bin'), filled_swr)
 
     # extract longwave radiation
-    CLCT = interp_concat_json(path_raw_weather_folder, 'CLCT', start_date, end_date, mitgcm_grid)
+    print('Interpolating cloud cover (CLCT) to grid...')
+    CLCT = interp_concat_json(path_raw_weather_folder, 'CLCT', start_date, end_date, mitgcm_grid, weather_model_type)
+    print('Computing long wave radiation (lwdown) from air temperature and cloud cover...')
     lwr = compute_longwave_radiation(atemp, CLCT)
+    print(f'Saving lwdown.')
     write_binary(os.path.join(output_folder_path, 'lwdown.bin'), lwr)
