@@ -1,6 +1,7 @@
 import json
 import xarray as xr
 import numpy as np
+import pandas as pd
 import glob as glob
 import os
 from scipy.interpolate import griddata
@@ -102,7 +103,8 @@ def interp_to_grid(json_file, data_type, mitgcm_grid: MitgcmGrid):
 
     with open(json_file, "r") as file:
         json_data = json.load(file)
-        time = np.array(json_data).item().get('time')
+        json_times = np.array(json_data).item().get('time')
+        parsed_times = [pd.to_datetime(ts).tz_localize(None) for ts in json_times]
         lat = np.array(json_data['lat'])
         lon = np.array(json_data['lng'])
         try:
@@ -112,8 +114,8 @@ def interp_to_grid(json_file, data_type, mitgcm_grid: MitgcmGrid):
 
     data_interp = []
 
-    for ii in np.arange(len(time)):
-        time_ii = time[ii]
+    for ii in np.arange(len(parsed_times)):
+        time_ii = parsed_times[ii]
         # Flatten the original lat/lon mesh and data
         coord_raw_data = np.array([lat.flatten(), lon.flatten()]).T
         data_flat = data[ii, :, :].flatten()
