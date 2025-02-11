@@ -15,8 +15,11 @@ class ConfigObject:
         self.config_name = current_project['config_name']
         self.start_date = current_project['start_date']
         self.end_date = current_project['end_date']
+        self.reference_date = current_project['reference_date']
         self.weather_model = current_project['weather_model']
         self.computer_config = current_project['computer_config']
+        self.template_folder = current_project['template_folder']
+        self.with_pickup = eval(current_project['with_pickup'])
 
         with open(config_file_path, 'r') as file:
             config = json.load(file)["simulation_config"][self.config_name]
