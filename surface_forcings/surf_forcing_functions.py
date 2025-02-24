@@ -1,18 +1,84 @@
-import json
+import orjson
 import xarray as xr
 import numpy as np
+import pandas as pd
 import glob as glob
 import os
 from scipy.interpolate import griddata
+import requests
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
+from grid_and_bathy import MitgcmGrid
+from multiprocessing import Pool
+from concurrent.futures import ThreadPoolExecutor
 
-class MitgcmGrid():
-    def __init__(self, path_grid):
-        self.x = np.load(os.path.join(path_grid, 'x.npy'))
-        self.y = np.load(os.path.join(path_grid, 'y.npy'))
-        self.lat_grid = np.load(os.path.join(path_grid, 'lat_grid.npy'))
-        self.lon_grid = np.load(os.path.join(path_grid, 'lon_grid.npy'))
+
+def fetch_and_save(url, file_path):
+    """Fetch data from the API and save it to a file."""
+    if os.path.isfile(file_path):
+        print(f"Data already exists: {file_path}")
+        return
+
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open(file_path, "w") as file:
+            file.write(response.text)
+        print(f"Saved data to {file_path}")
+    else:
+        print(f"Failed to fetch data from {url}. Error: {response.text}")
+
+
+def download_weather_reanalysis(base_url, start_date, end_date, lat0, long0, lat1, long1, folder_path):
+    start_dt = datetime.strptime(start_date, "%Y%m%d")
+    end_dt = datetime.strptime(end_date, "%Y%m%d")
+
+    variables = ['T_2M', 'U', 'V', 'GLOB', 'RELHUM_2M', 'PMSL', 'CLCT', 'PS']
+    current_date = start_dt
+
+    with ThreadPoolExecutor(max_workers=8) as executor:  # Adjust workers as needed
+        futures = []
+
+        while current_date <= end_dt:
+            start_window_str = current_date.strftime("%Y%m%d")
+            end_window_str = current_date.strftime("%Y%m%d")
+
+            for var in variables:
+                url = f"{base_url}/{start_window_str}/{end_window_str}/{lat0}/{long0}/{lat1}/{long1}?variables={var}"
+                file_name = f"{start_window_str}_{end_window_str}_{var}.json"
+                file_path = os.path.join(folder_path, file_name)
+
+                # Submit each request as a separate thread
+                futures.append(executor.submit(fetch_and_save, url, file_path))
+
+            current_date += timedelta(days=1)
+
+        # Wait for all threads to finish
+        for future in futures:
+            future.result()
+
+
+def download_weather_forecast(base_url, start_date, lat0, long0, lat1, long1, folder_path):
+    # Convert input dates to datetime objects
+    start_dt = datetime.strptime(start_date, "%Y%m%d")
+    end_dt = start_dt + timedelta(days=4) #TO DO : change time window for different forecasts ?
+
+    variables = ['T_2M', 'U', 'V', 'GLOB', 'RELHUM_2M', 'PMSL', 'CLCT', 'PS']
+    for var in variables:
+        url = f'{base_url}/{start_dt.strftime("%Y%m%d")}/{lat0}/{long0}/{lat1}/{long1}?variables={var}'
+        # Fetch data from the API
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            # Save the data to a file with date range in the filename
+            file_name = f'{start_dt.strftime("%Y%m%d")}_{end_dt.strftime("%Y%m%d")}_{var}.json'
+            file_path = os.path.join(folder_path, file_name)
+
+            with open(file_path, "w") as file:
+                file.write(response.text)
+                print(f"Saved data to {file_path}")
+        else:
+            print(f"Failed to fetch data for {start_dt} to {end_dt}. Error : {response.text}. url : {url}")
+
 
 def write_binary(path_fname,data):
     '''
@@ -30,97 +96,113 @@ def write_binary(path_fname,data):
     fid.close()
 
 
-def interp_to_grid(json_file, data_type, mitgcm_grid):
-    '''
-    json_file: path to json file
-    data_type: string of parameter
-    lat_grid, lon_grid: lat, lon mesh of grid for interpolation
-    '''
+def load_json(file_path: str) -> dict:
+    with open(file_path, "rb") as file:
+        return orjson.loads(file.read())
 
-    with open(json_file, "r") as file:
-        data = json.load(file)
-        time = np.array(data).item().get('time')
-        lat = np.array(data['lat'])
-        lon = np.array(data['lng'])
-        data = np.array(data[data_type]['data'])
 
-    data_interp = []
+def extract_data_from_json(json_data: dict, json_path: str, data_type: str) -> np.array:
+    # Handle possible different data structures
+    if data_type in json_data:
+        data = np.array(json_data[data_type]["data"])
+    elif "variables" in json_data and data_type in json_data["variables"]:
+        data = np.array(json_data["variables"][data_type]["data"])
+    else:
+        raise KeyError(f"Data type '{data_type}' not found in JSON {json_path}.")
 
-    for ii in np.arange(len(time)):
-        time_ii = time[ii]
-        # Flatten the original lat/lon mesh and data
-        coord_raw_data = np.array([lat.flatten(), lon.flatten()]).T
-        data_flat = data[ii, :, :].flatten()
-        data_interp_tt = griddata(coord_raw_data, data_flat, (mitgcm_grid.lat_grid, mitgcm_grid.lon_grid),
-                                  method='cubic')
+    return data
 
-        # set as xarray - replace lat_grid and lon_grid with XY grid
-        data_interp_tt = xr.DataArray(data_interp_tt, dims=["Y", "X"],
-                                      coords={"X": mitgcm_grid.x, "Y": mitgcm_grid.y, })
 
-        data_interp_tt = data_interp_tt.assign_coords({"T": time_ii})
+def select_first_24h(parsed_times: np.array(datetime), data: np.array):
+    start_time = parsed_times[0]  # Assuming times are sorted
+    end_time = start_time + pd.Timedelta(hours=24)
+    valid_indices = (parsed_times >= start_time) & (parsed_times < end_time)
 
-        data_interp.append(data_interp_tt)
+    parsed_times = parsed_times[valid_indices]  # Filter timestamps
+    data = data[valid_indices]  # Filter data
 
-    data_interp = xr.concat(data_interp, dim='T').sortby('T')
+    return parsed_times, data
 
-    return (data_interp)
+
+def interp_to_grid(json_file: str, data_type: str, mitgcm_grid: MitgcmGrid):
+    # Load JSON data once with orjson
+    json_data = load_json(json_file)
+
+    # Extract timestamps and convert to datetime
+    parsed_times = pd.to_datetime(
+        np.array(json_data).item().get('time')
+        ).tz_localize(None)
+
+    # Extract latitude and longitude
+    lat, lon = np.array(json_data['lat']), np.array(json_data['lng'])
+    coord_raw_data = np.column_stack((lat.flatten(), lon.flatten()))
+
+    data = extract_data_from_json(json_data, json_file, data_type)
+    filtered_parsed_times, filtered_data = select_first_24h(parsed_times, data)
+
+    # Interpolate over all time steps (first 24h)
+    data_interp = [
+        xr.DataArray(
+            griddata(coord_raw_data, filtered_data[i].flatten(),
+                     (mitgcm_grid.lat_grid, mitgcm_grid.lon_grid),
+                     method="linear"),
+            dims=["Y", "X"],
+            coords={"X": mitgcm_grid.x, "Y": mitgcm_grid.y, "T": time_i}
+        )
+        for i, time_i in enumerate(filtered_parsed_times)
+    ]
+
+    return xr.concat(data_interp, dim="T").sortby("T")
 
 
 def filter_json_files_by_date(all_json_files: list[str], str_start_date: str, str_end_date: str) -> list[str]:
     start_date = datetime.strptime(str_start_date, '%Y%m%d')
     end_date = datetime.strptime(str_end_date, '%Y%m%d')
 
-    filtered_json_files = []
-    for file in all_json_files:
+    def is_within_range(file):
         json_dates = re.findall(r'\d{8}', file)
         start_date_json = datetime.strptime(json_dates[0], '%Y%m%d')
         end_date_json = datetime.strptime(json_dates[1], '%Y%m%d')
+        return (start_date_json >= start_date) & (start_date_json <= end_date) & (end_date_json > start_date)
 
-        if (start_date_json >= start_date) & (start_date_json < end_date) & (end_date_json > start_date) & (
-                end_date_json <= end_date):
-            filtered_json_files.append(file)
-
-    return filtered_json_files
+    return list(filter(is_within_range, all_json_files))
 
 
-def interp_concat_json(folder_json_path, data_type, str_start_date: str, str_end_date: str, mitgcm_grid: MitgcmGrid) \
-        -> xr.DataArray:
+def interp_concat_json(folder_json_path, data_type, str_start_date, str_end_date, mitgcm_grid, parallel_n,
+                       weather_model_type=""):
     all_json_files = glob.glob(os.path.join(folder_json_path, f'*_{data_type}.json'))
     json_files = filter_json_files_by_date(all_json_files, str_start_date, str_end_date)
 
-    all_data = []
+    if weather_model_type == "forecast":
+        data_type += "_MEAN"
 
-    for file in json_files:
-        data = interp_to_grid(file, data_type, mitgcm_grid)
-        all_data.append(data)
+    with Pool(parallel_n) as pool:
+        all_data = pool.starmap(interp_to_grid, [(file, data_type, mitgcm_grid) for file in json_files])
 
     all_data = xr.concat(all_data, dim='T').sortby('T')
 
-    # remove duplicate values - review download from COSMO
-    _, unique_ind = np.unique(np.unique(all_data['T'].values), return_index=True)
-    unique_ind_sorted = np.sort(unique_ind)
-    all_data = all_data.isel(T=unique_ind_sorted)
+    unique_values, unique_ind = np.unique(all_data['T'].values, return_index=True)
+    all_data_cleaned = all_data.isel(T=np.sort(unique_ind))
 
-    # binary file for MITgcm should be in XYT
-    all_data = all_data.transpose('T', 'Y', 'X')
-
-    return (all_data)
+    return all_data_cleaned.transpose('T', 'Y', 'X')
 
 
 def calculate_specific_humidity(temp, relhum, atm_press):
+    """
+    Compute specific humidity from air temperature, relative humidity and atmospheric pressure.
+
+    - temp: Air temperature in Kelvin
+    - relhum: Relative humidity in %
+    - atm_press: Atmospheric pressure in Pascal
+    """
     # temp needs to be in celcius
     temp = temp - 273.15
-
     # atmospheric pressure should be in hPa
     atm_press = atm_press / 100.0
-
     # saturation vapour pressure (e_s)
     e_s = 6.112 * np.exp((17.67 * temp) / (temp + 243.5))
-
     # actual vapour pressure (e)
     e = (relhum / 100) * e_s
-
     # Step 3: Calculate the specific humidity (q)
     q = (0.622 * e) / (atm_press - (0.378 * e))
 
@@ -144,43 +226,40 @@ def compute_longwave_radiation(atemp, cloud_cover):
     lwr = (1 - A_L) * 5.67e-8 * E_a * np.power(atemp, 4)
     return lwr
 
-def check_output_folder(output_folder_path):
-    if not os.path.exists(output_folder_path):
-        os.makedirs(output_folder_path)
-        print(f"Directory '{output_folder_path}' created.")
 
+def extract_and_save_surface_forcings(output_folder_path, start_date, end_date, path_raw_weather_folder, mitgcm_grid,
+                                      parallel_n, weather_model_type=""):
+    os.makedirs(output_folder_path, exist_ok=True)
 
-def extract_and_save_surface_forcings(output_folder_path, start_date, end_date, path_raw_weather_folder, path_grid):
-    check_output_folder(output_folder_path)
+    def process_variable(var_name, output_name):
+        print(f'Interpolating {var_name} to grid...')
+        data = interp_concat_json(path_raw_weather_folder, var_name, start_date, end_date, mitgcm_grid, parallel_n,
+                                  weather_model_type)
+        # data = data.fillna(0)  # Handle missing values early
+        print(f'Saving {output_name}...')
+        write_binary(os.path.join(output_folder_path, f'{output_name}.bin'), data)
 
-    #load mitgcm model grid
-    mitgcm_grid = MitgcmGrid(path_grid)
+        return data
 
-    #extract wind speed
-    u10 = interp_concat_json(path_raw_weather_folder, 'U', start_date, end_date, mitgcm_grid)
-    v10 = interp_concat_json(path_raw_weather_folder, 'V', start_date, end_date, mitgcm_grid)
-    write_binary(os.path.join(output_folder_path, 'u10.bin'), u10)
-    write_binary(os.path.join(output_folder_path, 'v10.bin'), v10)
+    process_variable('U', 'u10')
+    process_variable('V', 'v10')
+    process_variable('GLOB', 'swdown')
 
-    #extract air temperature
-    atemp = interp_concat_json(path_raw_weather_folder, 'T_2M', start_date, end_date, mitgcm_grid)
-    write_binary(os.path.join(output_folder_path, 'atemp.bin'), atemp)
+    atemp = process_variable('T_2M', 'atemp')
+    apress = process_variable('PS', 'apressure')
 
-    #extract surface pressure
-    apress = interp_concat_json(path_raw_weather_folder, 'PS', start_date, end_date, mitgcm_grid)
-    pmsl = interp_concat_json(path_raw_weather_folder, 'PMSL', start_date, end_date, mitgcm_grid)
-    write_binary(os.path.join(output_folder_path, 'apressure.bin'), apress)
-
-    #extract specific humidity
-    relhum = interp_concat_json(path_raw_weather_folder, 'RELHUM_2M', start_date, end_date, mitgcm_grid)
+    print('Computing specific humidity (aqh)...')
+    relhum = interp_concat_json(path_raw_weather_folder, 'RELHUM_2M', start_date, end_date, mitgcm_grid,
+                                parallel_n, weather_model_type)
     aqh = calculate_specific_humidity(atemp, relhum, apress)
+    print('Saving aqh...')
     write_binary(os.path.join(output_folder_path, 'aqh.bin'), aqh)
 
-    #extract shortwave radiation
-    swr = interp_concat_json(path_raw_weather_folder, 'GLOB', start_date, end_date, mitgcm_grid)
-    write_binary(os.path.join(output_folder_path, 'swdown.bin'), swr)
-
-    # extract longwave radiation
-    CLCT = interp_concat_json(path_raw_weather_folder, 'CLCT', start_date, end_date, mitgcm_grid)
-    lwr = compute_longwave_radiation(atemp, CLCT)
+    print('Computing longwave radiation (lwdown)...')
+    clct = interp_concat_json(path_raw_weather_folder, 'CLCT', start_date, end_date, mitgcm_grid, parallel_n,
+                              weather_model_type)
+    lwr = compute_longwave_radiation(atemp, clct)
+    print('Saving lwdown...')
     write_binary(os.path.join(output_folder_path, 'lwdown.bin'), lwr)
+
+    print('Done computing binary data.')
