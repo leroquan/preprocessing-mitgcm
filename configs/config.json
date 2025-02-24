@@ -1,15 +1,15 @@
 {
   "current_project": {
-    "config_name": "geneva_200m",
+    "grid_config_name": "geneva_1000m",
     "start_date": "20240401",
-    "end_date": "20240801",
-    "reference_date": "20231201",
+    "end_date": "20240510",
+    "reference_date": "20240401",
     "weather_model": "cosmo",
-    "computer_config": "cscs_geneva",
-    "template_folder": "geneva_fazel",
-    "with_pickup": "True"
+    "computer_config": "kball_laken_geneva",
+    "template_folder": "geneva_base",
+    "with_pickup": "False"
   },
-  "simulation_config": {
+  "grid_config": {
     "geneva_1000m": {
       "grid_resolution": 1000,
       "x0_ch1903": 500000,
