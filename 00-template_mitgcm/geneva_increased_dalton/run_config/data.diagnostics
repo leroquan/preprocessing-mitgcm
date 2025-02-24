@@ -1,0 +1,15 @@
+ &DIAGNOSTICS_LIST
+  dumpAtLast   = .FALSE.,
+  diag_mnc     = .FALSE.,
+#--
+# 3D snapshots
+  fields(1:4,1) = 'UVEL    ','VVEL    ','WVEL    ','THETA   ',
+# do not specify levels => all levels are selected
+  fileName(1) = '3Dsnaps',
+# velocity and temperature output in the entire domain every hour 
+  frequency(1) = -3600.0,
+
+ &
+
+ &DIAG_STATIS_PARMS
+ &
