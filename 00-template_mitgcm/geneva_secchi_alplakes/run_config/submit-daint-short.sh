@@ -11,6 +11,7 @@
 # Script to run the simulation on the CSSC cluster
 
 export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+export MPICH_GPU_SUPPORT_ENABLED=0
 
 srun --ntasks=${SLURM_NTASKS} ./mitgcmuv
 
