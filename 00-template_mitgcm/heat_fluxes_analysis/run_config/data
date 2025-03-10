@@ -78,7 +78,7 @@
 ###################################################
 # Time stepping parameters.
  &PARM03
- deltaT              = 4
+ deltaT              = 60
  startTime           = !start_time!
  endTime             = !end_time!
 #  3024000.0
@@ -87,10 +87,10 @@
  abEps               = 0.03
 
 # interval to write model state/snapshot data (s)
- dumpFreq            = 3600
+ dumpFreq            = 86400
 
 # interval to write monitor output (s).
- monitorFreq         = 3600
+ monitorFreq         = 0
  monitorSelect       = 1
  
 # Pickup/restart options. We will also quietly track the iteration number.
@@ -99,7 +99,7 @@
  pickupSuff          = "!pickup_number!"
 
 # 172800.0
- pChkptFreq=43200.0,
+ pChkptFreq=0.0,
  chkptFreq=0.0,
  &
 

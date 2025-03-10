@@ -2,10 +2,10 @@
   dumpAtLast   = .FALSE.,
   diag_mnc     = .FALSE.,
 #--
-# 3D snapshots
-  fields(1:4,1) = 'UVEL    ','VVEL    ','WVEL    ','THETA   ',
+# Heat flux
+  fields(1:5,1) = 'THETA','surForcT','oceQnet','oceQsw','TFLUX',
 # do not specify levels => all levels are selected
-  fileName(1) = '3Dsnaps',
+  fileName(1) = 'heatflux',
 # velocity and temperature output in the entire domain every hour 
   frequency(1) = -3600.0,
 
