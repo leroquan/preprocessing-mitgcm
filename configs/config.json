@@ -1,11 +1,11 @@
 {
   "current_project": {
-    "grid_config_name": "geneva_1000m",
-    "start_date": "20240401",
-    "end_date": "20240510",
-    "reference_date": "20240401",
-    "weather_model": "cosmo",
-    "computer_config": "kball_laken_geneva",
+    "grid_config_name": "geneva_200m",
+    "start_date": "20240301",
+    "end_date": "20241201",
+    "reference_date": "20240301",
+    "weather_model": "continuous_reanalysis",
+    "computer_config": "cscs_geneva",
     "template_folder": "geneva_base",
     "with_pickup": "False"
   },
@@ -97,6 +97,12 @@
     "cosmo": {
       "base_url": "https://alplakes-internal-api.eawag.ch/meteoswiss/cosmo/area/reanalysis/VNXQ34",
       "raw_results_from_api_folder": "C:\\Users\\leroquan\\Documents\\Data\\meteo\\COSMO reanalysis\\raw_from_alplakes_api",
+      "buffer": 0.02,
+      "type": "reanalysis"
+    },
+    "continuous_reanalysis": {
+      "base_url": "https://alplakes-internal-api.eawag.ch/meteoswiss/cosmo/area/reanalysis/VNXQ34",
+      "raw_results_from_api_folder": "C:\\Users\\leroquan\\Documents\\Data\\meteo\\continuous_reanalysis\\raw_from_alplakes_api",
       "buffer": 0.02,
       "type": "reanalysis"
     }
