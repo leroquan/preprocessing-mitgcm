@@ -209,7 +209,29 @@ def calculate_specific_humidity(temp, relhum, atm_press):
     return (q)
 
 
-def compute_longwave_radiation(atemp, cloud_cover):
+def compute_vapor_pressure(atemp, relhum):
+    """
+    Calculate vapor pressure using the Magnus formula.
+
+    Parameters:
+    - temperature (float or numpy array): Air temperature in Kelvin
+    - relhum (float or numpy array): Relative humidity as a percentage (e.g., 60 for 60%)
+
+    Returns:
+    - vapor_pressure (float or numpy array): Vapor pressure in hPa (hectopascals)
+    """
+    a = 17.27
+    b = 237.7
+
+    rh_fraction = relhum / 100.0
+    atemp_celsius = atemp-273.15
+
+    saturation_vapor_pressure = 6.112 * np.exp((a * atemp_celsius) / (atemp_celsius + b))
+
+    return rh_fraction * saturation_vapor_pressure  # vapor pressure in mbar (=hPa)
+
+
+def compute_longwave_radiation(atemp, relhum, cloud_cover):
     """
     Compute longwave radiation from air temperature and cloud cover.
 
@@ -218,17 +240,31 @@ def compute_longwave_radiation(atemp, cloud_cover):
     """
     # cloud cover should be from 0 to 1
     cloud_cover = cloud_cover/100
-    cloud_cover = cloud_cover.where(cloud_cover > 0,0)
-    vaporPressure = 6.11 * np.exp(17.67 * (atemp-273.15) / (atemp-29.65)) # in units of hPa
+    vaporPressure = compute_vapor_pressure(atemp, relhum)  # in units mbar
     A_L = 0.03   # Infrared radiation albedo
     a = 1.09     # Calibration parameter
-    E_a = a * (1 + 0.17 * np.power(cloud_cover, 2)) * 1.24 * np.power(vaporPressure / atemp, 1./7)
+
+    E_a = a * (1 + 0.17 * np.power(cloud_cover, 2)) * 1.24 * np.power(vaporPressure / atemp, 1./7)  # emissivity
+
     lwr = (1 - A_L) * 5.67e-8 * E_a * np.power(atemp, 4)
     return lwr
 
 
-def extract_and_save_surface_forcings(output_folder_path, start_date, end_date, path_raw_weather_folder, mitgcm_grid,
-                                      parallel_n, weather_model_type=""):
+def extract_and_save_surface_forcings(output_folder_path: str, start_date: str, end_date: str,
+                                      path_raw_weather_folder: str, mitgcm_grid: MitgcmGrid, parallel_n: int,
+                                      weather_model_type=""):
+    """
+    Extract surface forcings from json files coming from the Alplakes API and save them as binary files for MITgcm use.
+
+    - output_folder_path: Path to the output folder
+    - start_date: Start date of the extraction in format string '%Y%m%d' (ex: "20190301")
+    - end_date: Start date of the extraction in format string '%Y%m%d' (ex: "20190301")
+    - path_raw_weather_folder: Path to the folder containing the jsons files
+    - mitgcm_grid: MitgcmGrid object corresponding to the MITgcm grid. Can be created with class MitgcmGrid() and
+    function get_grid(path_folder_grid: str) from grid_and_bathy
+    - weather_model_type: current options = 'reanalysis' or 'forecast'
+    """
+
     os.makedirs(output_folder_path, exist_ok=True)
 
     def process_variable(var_name, output_name):
@@ -249,16 +285,14 @@ def extract_and_save_surface_forcings(output_folder_path, start_date, end_date, 
     apress = process_variable('PS', 'apressure')
 
     print('Computing specific humidity (aqh)...')
-    relhum = interp_concat_json(path_raw_weather_folder, 'RELHUM_2M', start_date, end_date, mitgcm_grid,
-                                parallel_n, weather_model_type)
+    relhum = process_variable('RELHUM_2M', 'relhum')
     aqh = calculate_specific_humidity(atemp, relhum, apress)
     print('Saving aqh...')
     write_binary(os.path.join(output_folder_path, 'aqh.bin'), aqh)
 
     print('Computing longwave radiation (lwdown)...')
-    clct = interp_concat_json(path_raw_weather_folder, 'CLCT', start_date, end_date, mitgcm_grid, parallel_n,
-                              weather_model_type)
-    lwr = compute_longwave_radiation(atemp, clct)
+    clct = process_variable('CLCT', 'clct')
+    lwr = compute_longwave_radiation(atemp, relhum, clct)
     print('Saving lwdown...')
     write_binary(os.path.join(output_folder_path, 'lwdown.bin'), lwr)
 
