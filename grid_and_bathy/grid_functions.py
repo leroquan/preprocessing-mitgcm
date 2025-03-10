@@ -6,15 +6,42 @@ from pyproj import Transformer
 
 
 class MitgcmGrid:
-    def __init__(self, path_grid):
-        self.x = np.load(os.path.join(path_grid, 'x.npy'))
-        self.y = np.load(os.path.join(path_grid, 'y.npy'))
-        self.lat_grid = np.load(os.path.join(path_grid, 'lat_grid.npy'))
-        self.lon_grid = np.load(os.path.join(path_grid, 'lon_grid.npy'))
+    """Class representing an MITgcm grid, with optional loading from .npy files."""
+
+    def __init__(self):
+        """Initialize an empty MITgcm grid."""
+        self.x = np.array([])
+        self.y = np.array([])
+        self.lat_grid = np.array([])
+        self.lon_grid = np.array([])
+
+    def load_from_path(self, path_grid: str):
+        """
+        Load grid data from a given folder containing .npy files.
+
+        Args:
+            path_grid (str): Path to the folder containing the grid files.
+
+        Raises:
+            FileNotFoundError: If any required grid file is missing.
+            RuntimeError: If loading fails due to other errors.
+        """
+        try:
+            self.x = np.load(os.path.join(path_grid, 'x.npy'))
+            self.y = np.load(os.path.join(path_grid, 'y.npy'))
+            self.lat_grid = np.load(os.path.join(path_grid, 'lat_grid.npy'))
+            self.lon_grid = np.load(os.path.join(path_grid, 'lon_grid.npy'))
+        except FileNotFoundError as e:
+            raise FileNotFoundError(f"Missing grid file: {e.filename}") from e
+        except Exception as e:
+            raise RuntimeError(f"Error loading grid data: {e}") from e
 
 
 def get_grid(path_folder_grid: str) -> MitgcmGrid:
-    return MitgcmGrid(path_folder_grid)
+    mitgcm_grid = MitgcmGrid()
+    mitgcm_grid.load_from_path(path_folder_grid)
+
+    return mitgcm_grid
 
 
 def create_regular_grid(nx: int, ny: int, grid_resolution: int) \
