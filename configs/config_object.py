@@ -34,6 +34,7 @@ class ConfigObject:
 
         # Grid parameters
         self.grid_resolution = grid_config['grid_resolution']
+        self.time_step = grid_config['time_step']
         self.x0_ch1903 = grid_config["x0_ch1903"]
         self.y0_ch1903 = grid_config["y0_ch1903"]
         self.x1_ch1903 = grid_config["x1_ch1903"]

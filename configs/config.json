@@ -40,6 +40,7 @@
     },
     "geneva_200m": {
       "grid_resolution": 200,
+      "time_step": 32,
       "x0_ch1903": 500000,
       "y0_ch1903": 116500,
       "x1_ch1903": 563000,
@@ -54,6 +55,7 @@
     },
     "geneva_100m": {
       "grid_resolution": 100,
+      "time_step": 4,
       "x0_ch1903": 500000,
       "y0_ch1903": 116500,
       "x1_ch1903": 563000,
@@ -68,6 +70,7 @@
     },
     "geneva_50m": {
       "grid_resolution": 50,
+      "time_step": 4,
       "x0_ch1903": 500000,
       "y0_ch1903": 116500,
       "x1_ch1903": 563000,
