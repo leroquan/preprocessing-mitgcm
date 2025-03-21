@@ -31,12 +31,14 @@ def copy_template(template_folder, output_folder):
 
 
 def write_data_config_files(data_config_path: str, initial_temperature: np.array, start_time_in_second: int,
-                            end_time_in_second: int, pickup_number: str, dz_grid: np.array, grid_resolution: int):
+                            end_time_in_second: int, pickup_number: str, dz_grid: np.array, grid_resolution: int,
+                            time_step: int):
     modify_arguments('!initial_temperature!', initial_temperature, data_config_path)
     modify_arguments('!start_time!', [start_time_in_second], data_config_path)
     modify_arguments('!end_time!', [end_time_in_second], data_config_path)
     modify_arguments('!pickup_number!', [pickup_number], data_config_path)
     modify_arguments('!grid_resolution!', [grid_resolution], data_config_path)
+    modify_arguments('!time_step!', [time_step], data_config_path)
     modify_arguments('!dz_grid!', dz_grid, data_config_path)
 
 
