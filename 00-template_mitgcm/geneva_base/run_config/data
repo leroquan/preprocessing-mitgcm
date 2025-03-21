@@ -78,7 +78,7 @@
 ###################################################
 # Time stepping parameters.
  &PARM03
- deltaT              = 4
+ deltaT              = !time_step!
  startTime           = !start_time!
  endTime             = !end_time!
 #  3024000.0
