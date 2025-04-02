@@ -6,6 +6,7 @@ class Paths:
         self.grid_folder_path = config['grid_folder_path']
         self.dz_grid_csv_path = config['dz_grid_csv_path']
         self.bathy_path = config['bathy_path']
+        self.swiss_topo_path = config['swiss_topo_path']
         self.raw_results_from_api_folder = weather_model_config['raw_results_from_api_folder']
 
 
