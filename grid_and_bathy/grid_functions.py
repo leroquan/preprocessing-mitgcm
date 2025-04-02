@@ -44,11 +44,11 @@ def get_grid(path_folder_grid: str) -> MitgcmGrid:
     return mitgcm_grid
 
 
-def create_regular_grid(nx: int, ny: int, grid_resolution: int) \
+def create_regular_grid(nx: int, ny: int, x_resolution: int, y_resolution: int) \
         -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     # XY on mitgcm grid
-    x = np.arange(0, nx * grid_resolution, grid_resolution)
-    y = np.arange(0, ny * grid_resolution, grid_resolution)
+    x = np.arange(0, nx * x_resolution, x_resolution)
+    y = np.arange(0, ny * y_resolution, y_resolution)
     xgrid, ygrid = (np.meshgrid(x, y))
 
     return x, y, xgrid, ygrid
@@ -98,9 +98,10 @@ def save_grid(folder_path_out: str, x: np.array(float), y: np.array(float), x_ro
         np.save(f, lon_grid)
 
 
-def build_grid(nx: int, ny: int, grid_resolution: int, x0_sg: float, y0_sg: float, x1_sg: float, y1_sg: float) \
+def build_grid(nx: int, ny: int, x_resolution: int, y_resolution: int,
+               x0_sg: float, y0_sg: float, x1_sg: float, y1_sg: float) \
         -> (np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray):
-    x, y, xgrid, ygrid = create_regular_grid(nx, ny, grid_resolution)
+    x, y, xgrid, ygrid = create_regular_grid(nx, ny, x_resolution, y_resolution)
     xsg, ysg = translate_grid(x, y, x0_sg, y0_sg)
     xsg_grid, ysg_grid = np.meshgrid(xsg, ysg)
 
@@ -115,7 +116,8 @@ def build_grid(nx: int, ny: int, grid_resolution: int, x0_sg: float, y0_sg: floa
 
 def build_and_save_mitgcm_grid(folder_path_out: str, nx: int, ny: int, grid_resolution: int, x0_sg: float, y0_sg: float,
                                x1_sg: float, y1_sg: float):
-    x, y, x_rotated, y_rotated, lat_grid, lon_grid = build_grid(nx, ny, grid_resolution, x0_sg, y0_sg, x1_sg, y1_sg)
+    x, y, x_rotated, y_rotated, lat_grid, lon_grid = build_grid(nx, ny, grid_resolution, grid_resolution,
+                                                                x0_sg, y0_sg, x1_sg, y1_sg)
     save_grid(folder_path_out, x, y, x_rotated, y_rotated, lat_grid, lon_grid)
 
 
