@@ -184,7 +184,12 @@ def interp_concat_json(folder_json_path, data_type, str_start_date, str_end_date
     unique_values, unique_ind = np.unique(all_data['T'].values, return_index=True)
     all_data_cleaned = all_data.isel(T=np.sort(unique_ind))
 
-    return all_data_cleaned.transpose('T', 'Y', 'X')
+    parsed_start_date = pd.to_datetime(str_start_date, format="%Y%m%d")
+    parsed_end_date = pd.to_datetime(str_end_date, format="%Y%m%d")
+    datetime_list = pd.date_range(start=parsed_start_date, end=parsed_end_date, freq="h").to_list()
+    interp_data = all_data_cleaned.interp({'T': datetime_list})  # make sure that time is consistent
+
+    return interp_data.transpose('T', 'Y', 'X')
 
 
 def calculate_specific_humidity(temp, relhum, atm_press):
