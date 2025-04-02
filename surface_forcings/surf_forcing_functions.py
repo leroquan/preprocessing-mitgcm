@@ -163,7 +163,7 @@ def filter_json_files_by_date(all_json_files: list[str], str_start_date: str, st
         json_dates = re.findall(r'\d{8}', file)
         start_date_json = datetime.strptime(json_dates[0], '%Y%m%d')
         end_date_json = datetime.strptime(json_dates[1], '%Y%m%d')
-        return (start_date_json >= start_date) & (start_date_json <= end_date) & (end_date_json > start_date)
+        return (start_date_json >= start_date) & (start_date_json <= end_date) & (end_date_json >= start_date)
 
     return list(filter(is_within_range, all_json_files))
 
