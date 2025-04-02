@@ -19,9 +19,9 @@
       "Nx": 70,
       "Ny": 26,
       "lake_altitude": 372,
-      "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\z-grid\\dz_geneva.csv",
-      "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\1000m",
-      "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\1000m\\bathy_geneva_1000m.bin",
+      "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\z-grid\\dz_geneva.csv",
+      "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\1000m",
+      "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\1000m\\bathy_geneva_1000m.bin",
       "swiss_topo_path": "C:\\Users\\leroquan\\Documents\\Data\\swissbathy3d_lacleman_2056_5728_esriasciigrid"
     },
     "geneva_400m": {
@@ -33,9 +33,9 @@
       "Nx": 180,
       "Ny": 80,
       "lake_altitude": 372,
-      "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\z-grid\\dz_geneva.csv",
-      "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\400m",
-      "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\400m\\bathy_geneva_400m.bin",
+      "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\z-grid\\dz_geneva.csv",
+      "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\400m",
+      "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\400m\\bathy_geneva_400m.bin",
       "swiss_topo_path": "C:\\Users\\leroquan\\Documents\\Data\\swissbathy3d_lacleman_2056_5728_esriasciigrid"
     },
     "geneva_200m": {
@@ -48,8 +48,8 @@
       "Nx": 336,
       "Ny": 132,
       "lake_altitude": 372,
-      "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\z-grid\\dz_geneva.csv",
-      "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\200m",
+      "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\z-grid\\dz_geneva.csv",
+      "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\200m",
       "bathy_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\Instructions Fazel\\binary_data\\template_bathymetry\\bathyGeneva_200m.bin",
       "swiss_topo_path": "C:\\Users\\leroquan\\Documents\\Data\\swissbathy3d_lacleman_2056_5728_esriasciigrid"
     },
@@ -63,8 +63,8 @@
       "Nx": 672,
       "Ny": 264,
       "lake_altitude": 372,
-      "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\z-grid\\dz_geneva.csv",
-      "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\100m",
+      "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\z-grid\\dz_geneva.csv",
+      "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\100m",
       "bathy_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\Instructions Fazel\\binary_data\\template_bathymetry\\bathyGeneva_100m.bin",
       "swiss_topo_path": "C:\\Users\\leroquan\\Documents\\Data\\swissbathy3d_lacleman_2056_5728_esriasciigrid"
     },
@@ -78,9 +78,9 @@
       "Nx": 1344,
       "Ny": 528,
       "lake_altitude": 372,
-      "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\z-grid\\dz_geneva.csv",
-      "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\50m",
-      "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\50m\\bathy_geneva_50m_big_endian.bin",
+      "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\z-grid\\dz_geneva.csv",
+      "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\50m",
+      "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\50m\\bathy_geneva_50m_big_endian.bin",
       "swiss_topo_path": "C:\\Users\\leroquan\\Documents\\Data\\swissbathy3d_lacleman_2056_5728_esriasciigrid"
     }
   },
