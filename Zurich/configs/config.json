@@ -1,0 +1,130 @@
+{
+  "current_project": {
+    "grid_config_name": "zurich_200m",
+    "start_date": "20240301",
+    "end_date": "20240302",
+    "reference_date": "20240301",
+    "weather_model": "continuous_reanalysis",
+    "computer_config": "cscs_zurich",
+    "template_folder": "zurich_base",
+    "with_pickup": "False"
+  },
+  "grid_config": {
+    "geneva_1000m": {
+      "grid_resolution": 1000,
+      "x0_ch1903": 500000,
+      "y0_ch1903": 116500,
+      "x1_ch1903": 563000,
+      "y1_ch1903": 138700,
+      "Nx": 70,
+      "Ny": 26,
+      "lake_altitude": 372,
+      "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\z-grid\\dz_geneva.csv",
+      "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\1000m",
+      "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\1000m\\bathy_geneva_1000m.bin",
+      "swiss_topo_path": "C:\\Users\\leroquan\\Documents\\Data\\swissbathy3d_lacleman_2056_5728_esriasciigrid"
+    },
+    "geneva_400m": {
+      "grid_resolution": 400,
+      "x0_ch1903": 500000,
+      "y0_ch1903": 116500,
+      "x1_ch1903": 563000,
+      "y1_ch1903": 138700,
+      "Nx": 180,
+      "Ny": 80,
+      "lake_altitude": 372,
+      "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\z-grid\\dz_geneva.csv",
+      "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\400m",
+      "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\400m\\bathy_geneva_400m.bin",
+      "swiss_topo_path": "C:\\Users\\leroquan\\Documents\\Data\\swissbathy3d_lacleman_2056_5728_esriasciigrid"
+    },
+    "zurich_200m": {
+      "grid_resolution": 200,
+      "time_step": 32,
+      "x0_ch1903": 715000,
+      "y0_ch1903": 231600,
+      "x1_ch1903": 683000,
+      "y1_ch1903": 247600,
+      "Nx": 180,
+      "Ny": 60,
+      "lake_altitude": 406,
+      "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\z-grid\\dz_geneva.csv",
+      "grid_folder_path": "C:\\Users\\rasmusso\\Documents\\ZH\\data\\grid\\200m",
+      "bathy_path": "C:\\Users\\rasmusso\\Documents\\ZH\\data\\grid\\200m\\binary_data\\template_bathymetry\\bathy_zurich_200m.bin",
+      "swiss_topo_path": "C:\\Users\\rasmusso\\Documents\\ZH\\data\\swissbathy3d_zuerichsee_2056_5728"
+    },
+    "geneva_100m": {
+      "grid_resolution": 100,
+      "time_step": 4,
+      "x0_ch1903": 500000,
+      "y0_ch1903": 116500,
+      "x1_ch1903": 563000,
+      "y1_ch1903": 138700,
+      "Nx": 672,
+      "Ny": 264,
+      "lake_altitude": 372,
+      "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\z-grid\\dz_geneva.csv",
+      "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\100m",
+      "bathy_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\Instructions Fazel\\binary_data\\template_bathymetry\\bathyGeneva_100m.bin",
+      "swiss_topo_path": "C:\\Users\\leroquan\\Documents\\Data\\swissbathy3d_lacleman_2056_5728_esriasciigrid"
+    },
+    "geneva_50m": {
+      "grid_resolution": 50,
+      "time_step": 4,
+      "x0_ch1903": 500000,
+      "y0_ch1903": 116500,
+      "x1_ch1903": 563000,
+      "y1_ch1903": 138700,
+      "Nx": 1344,
+      "Ny": 528,
+      "lake_altitude": 372,
+      "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\z-grid\\dz_geneva.csv",
+      "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\50m",
+      "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\50m\\bathy_geneva_50m_big_endian.bin",
+      "swiss_topo_path": "C:\\Users\\leroquan\\Documents\\Data\\swissbathy3d_lacleman_2056_5728_esriasciigrid"
+    }
+  },
+  "weather_model_config": {
+    "icon": {
+      "base_url": "https://alplakes-internal-api.eawag.ch/meteoswiss/icon/area/reanalysis/kenda-ch1",
+      "raw_results_from_api_folder": "C:\\Users\\leroquan\\Documents\\Data\\meteo\\ICON reanalysis\\raw_from_alplakes_api",
+      "buffer": 0.02,
+      "type": "reanalysis"
+    },
+    "icon_forecast": {
+      "base_url": "https://alplakes-internal-api.eawag.ch/meteoswiss/icon/area/forecast/icon-ch2-eps",
+      "raw_results_from_api_folder": "C:\\Users\\leroquan\\Documents\\Data\\meteo\\ICON forecasts\\raw_from_alplakes_api",
+      "buffer": 0.02,
+      "type": "forecast"
+    },
+    "cosmo": {
+      "base_url": "https://alplakes-internal-api.eawag.ch/meteoswiss/cosmo/area/reanalysis/VNXQ34",
+      "raw_results_from_api_folder": "C:\\Users\\leroquan\\Documents\\Data\\meteo\\COSMO reanalysis\\raw_from_alplakes_api",
+      "buffer": 0.02,
+      "type": "reanalysis"
+    },
+    "continuous_reanalysis": {
+      "base_url": "https://alplakes-internal-api.eawag.ch/meteoswiss/cosmo/area/reanalysis/VNXQ34",
+      "raw_results_from_api_folder": "C:\\Users\\leroquan\\Documents\\Data\\meteo\\continuous_reanalysis\\raw_from_alplakes_api",
+      "buffer": 0.02,
+      "type": "reanalysis"
+    }
+  },
+  "computer_config": {
+    "cscs_geneva_400m": {
+      "Px": 36,
+      "Py": 16,
+      "endian_type": "big_endian"
+    },
+    "cscs_geneva": {
+      "Px": 48,
+      "Py": 12,
+      "endian_type": "big_endian"
+    },
+    "kball_laken_geneva": {
+      "Px": 12,
+      "Py": 3,
+      "endian_type": "big_endian"
+    }
+  }
+}
