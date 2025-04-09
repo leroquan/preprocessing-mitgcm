@@ -42,12 +42,12 @@ def write_data_config_files(data_config_path: str, initial_temperature: np.array
     modify_arguments('!dz_grid!', dz_grid, data_config_path)
 
 
-def write_size_config_files(size_config_path: str, Px: int, Py: int, Nx: int, Ny: int, Nr: int):
+def write_size_config_files(size_config_path: str, Px: int, Py: int, Nx: int, Ny: int, Nr: int, sNx: int, sNy: int):
     modify_arguments('!Px!', [Px], size_config_path)
     modify_arguments('!Py!', [Py], size_config_path)
     modify_arguments('!Nx!', [Nx], size_config_path)
     modify_arguments('!Ny!', [Ny], size_config_path)
     modify_arguments('!Nr!', [Nr], size_config_path)
-    modify_arguments('!sNx!', [int(Nx / Px)], size_config_path)
-    modify_arguments('!sNy!', [int(Ny / Py)], size_config_path)
+    modify_arguments('!sNx!', [sNx], size_config_path)
+    modify_arguments('!sNy!', [sNy], size_config_path)
 
