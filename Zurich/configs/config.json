@@ -51,7 +51,7 @@
       "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\z-grid\\dz_geneva.csv",
       "grid_folder_path": "C:\\Users\\rasmusso\\Documents\\ZH\\data\\grid\\200m",
       "bathy_path": "C:\\Users\\rasmusso\\Documents\\ZH\\data\\grid\\200m\\binary_data\\template_bathymetry\\bathy_zurich_200m.bin",
-      "swiss_topo_path": "C:\\Users\\rasmusso\\Documents\\ZH\\data\\swissbathy3d_zuerichsee_2056_5728"
+      "swiss_topo_path": "C:\\Users\\rasmusso\\Documents\\ZH\\data\\GIS\\bathy\\input"
     },
     "geneva_100m": {
       "grid_resolution": 100,
