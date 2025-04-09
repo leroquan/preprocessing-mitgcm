@@ -1,0 +1,32 @@
+ConfigObject Metadata
+=====================
+
+grid_config_name: zurich_200m
+start_date: 20240301
+end_date: 20240302
+reference_date: 20240301
+weather_model: continuous_reanalysis
+computer_config: cscs_zurich
+template_folder: zurich_base
+with_pickup: False
+grid_resolution: 200
+time_step: 32
+x0_ch1903: 678200
+y0_ch1903: 238400
+x1_ch1903: 708800
+y1_ch1903: 222000
+Nx: 180
+Ny: 58
+Px: 6
+Py: 6
+endian_type: big_endian
+lake_altitude: 406
+weather_api_base_url: https://alplakes-internal-api.eawag.ch/meteoswiss/cosmo/area/reanalysis/VNXQ34
+weather_download_buffer: 0.02
+weather_model_type: reanalysis
+paths:
+  grid_folder_path: C:\Users\rasmusso\Documents\ZH\data\grid\200m
+  dz_grid_csv_path: C:\Users\leroquan\Documents\Data\mitgcm_grids\Geneva\z-grid\dz_geneva.csv
+  bathy_path: C:\Users\rasmusso\Documents\ZH\data\grid\200m\bathy_zurich_200m.bin
+  swiss_topo_path: C:\Users\rasmusso\Documents\ZH\data\GIS\bathy\input
+  raw_results_from_api_folder: C:\Users\rasmusso\Documents\ZH\data\meteo\continuous reanalysis
