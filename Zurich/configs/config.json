@@ -46,7 +46,7 @@
       "x1_ch1903": 708800,
       "y1_ch1903": 222000,
       "Nx": 180,
-      "Ny": 58,
+      "Ny": 60,
       "lake_altitude": 406,
       "dz_grid_csv_path": "C:\\Users\\rasmusso\\Documents\\ZH\\data\\grid\\dz_grid\\dz_zurich.csv",
       "grid_folder_path": "C:\\Users\\rasmusso\\Documents\\ZH\\data\\grid\\200m",
