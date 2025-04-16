@@ -102,11 +102,12 @@ def build_grid(nx: int, ny: int, x_resolution: int, y_resolution: int,
                x0_sg: float, y0_sg: float, x1_sg: float, y1_sg: float) \
         -> (np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray):
     x, y, xgrid, ygrid = create_regular_grid(nx, ny, x_resolution, y_resolution)
-    xsg, ysg = translate_grid(x, y, x0_sg, y1_sg)
+    xsg, ysg = translate_grid(x, y, x0_sg, y0_sg)
     xsg_grid, ysg_grid = np.meshgrid(xsg, ysg)
 
     rotation_angle = get_grid_angle(x0_sg, y0_sg, x1_sg, y1_sg)
-    x_rotated, y_rotated = rotate_grid(xsg_grid, ysg_grid, x0_sg, y1_sg, rotation_angle)
+    print('rotation angle: %.2f'%rotation_angle)
+    x_rotated, y_rotated = rotate_grid(xsg_grid, ysg_grid, x0_sg, y0_sg, rotation_angle)
 
     coord_converter = Transformer.from_crs("EPSG:21781", "EPSG:4326", always_xy=True)
     lon_grid, lat_grid = coord_converter.transform(x_rotated, y_rotated)

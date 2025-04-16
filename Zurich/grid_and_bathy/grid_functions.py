@@ -106,6 +106,7 @@ def build_grid(nx: int, ny: int, x_resolution: int, y_resolution: int,
     xsg_grid, ysg_grid = np.meshgrid(xsg, ysg)
 
     rotation_angle = get_grid_angle(x0_sg, y0_sg, x1_sg, y1_sg)
+    print('rotation angle: %.2f'%rotation_angle)
     x_rotated, y_rotated = rotate_grid(xsg_grid, ysg_grid, x0_sg, y0_sg, rotation_angle)
 
     coord_converter = Transformer.from_crs("EPSG:21781", "EPSG:4326", always_xy=True)
