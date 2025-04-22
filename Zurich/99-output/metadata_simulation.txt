@@ -3,7 +3,7 @@ ConfigObject Metadata
 
 grid_config_name: zurich_200m
 start_date: 20240301
-end_date: 20240411
+end_date: 20240404
 reference_date: 20240301
 weather_model: continuous_reanalysis
 computer_config: cscs_zurich
