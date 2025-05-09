@@ -19,7 +19,8 @@ def modify_arguments(param_name: str, values: np.array, file_path):
     if len(values) > 1:
         for row in values:
             for val in row:
-                str_values += str(str(val) + ',')
+                if val != np.nan:
+                    str_values += str(str(val) + ',')
             str_values += '\n'
     else:
         str_values = str(values[0])
