@@ -99,7 +99,7 @@
  pickupSuff          = "!pickup_number!"
 
 # 172800.0
- pChkptFreq=43200.0,
+ pChkptFreq=604800.0,
  chkptFreq=0.0,
  &
 
