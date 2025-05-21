@@ -1,13 +1,14 @@
 import json
+import os
 
 
 class Paths:
-    def __init__(self, config, weather_model_config):
-        self.grid_folder_path = config['grid_folder_path']
-        self.dz_grid_csv_path = config['dz_grid_csv_path']
-        self.bathy_path = config['bathy_path']
-        self.swiss_topo_path = config['swiss_topo_path']
-        self.raw_results_from_api_folder = weather_model_config['raw_results_from_api_folder']
+    def __init__(self, config, grid_config, weather_model_config):
+        self.grid_folder_path = grid_config['grid_folder_path']
+        self.dz_grid_csv_path = grid_config['dz_grid_csv_path']
+        self.bathy_path = grid_config['bathy_path']
+        self.swiss_topo_path = grid_config['swiss_topo_path']
+        self.raw_weather_folder = os.path.join(weather_model_config['raw_results_from_api_folder'], config.lake_name)
 
 
 class ConfigObject:
@@ -15,6 +16,7 @@ class ConfigObject:
         with open(config_file_path, 'r') as file:
             current_project = json.load(file)["current_project"]
 
+        self.lake_name = current_project['lake_name']
         self.grid_config_name = current_project['grid_config_name']
         self.start_date = current_project['start_date']
         self.end_date = current_project['end_date']
@@ -25,7 +27,7 @@ class ConfigObject:
         self.with_pickup = eval(current_project['with_pickup'])
 
         with open(config_file_path, 'r') as file:
-            grid_config = json.load(file)["grid_config"][self.grid_config_name]
+            grid_config = json.load(file)["grid_config"][self.lake_name][self.grid_config_name]
 
         with open(config_file_path, 'r') as file:
             weather_model_config = json.load(file)["weather_model_config"][self.weather_model]
@@ -57,7 +59,7 @@ class ConfigObject:
         self.weather_model_type = weather_model_config['type']
 
         # Paths
-        self.paths = Paths(grid_config, weather_model_config)
+        self.paths = Paths(self, grid_config, weather_model_config)
 
     def write_metadata_to_file(self, output_file_path):
         with open(output_file_path, 'w') as file:
