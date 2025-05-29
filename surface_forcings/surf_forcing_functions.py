@@ -255,6 +255,33 @@ def compute_longwave_radiation(atemp, relhum, cloud_cover):
     return lwr
 
 
+def get_cloud_from_simstrat_input(start_date, end_date, mitgcm_grid):
+    simstrat_forcings = pd.read_csv(r"C:\Users\leroquan\Documents\Data\meteo\simstrat forcings\Forcing.dat",
+                                    sep='\s+')
+    cloud_timeserie = simstrat_forcings[['Time_[d]', 'cloud_[-]']]
+
+    date_ref = datetime(1981, 1, 1)
+    cloud_timeserie['time'] = (pd.to_timedelta(cloud_timeserie['Time_[d]'], 'd') + date_ref).dt.round('h')
+
+    parsed_start_date = pd.to_datetime(start_date, format="%Y%m%d")
+    parsed_end_date = pd.to_datetime(end_date, format="%Y%m%d")
+    datetime_list = pd.date_range(start=parsed_start_date, end=parsed_end_date, freq="h").to_list()
+
+    data_interp = [
+        xr.DataArray(
+            np.full((len(mitgcm_grid.y), len(mitgcm_grid.x)),
+                    cloud_timeserie.loc[cloud_timeserie["time"] == time_i, 'cloud_[-]'].values),
+            dims=["Y", "X"],
+            coords={"X": mitgcm_grid.x, "Y": mitgcm_grid.y, "T": time_i}
+        )
+        for i, time_i in enumerate(datetime_list)
+    ]
+
+    data = xr.concat(data_interp, dim="T").sortby("T")
+
+    return data.transpose('T', 'Y', 'X')
+
+
 def extract_and_save_surface_forcings(output_folder_path: str, start_date: str, end_date: str,
                                       path_raw_weather_folder: str, mitgcm_grid: MitgcmGrid, parallel_n: int,
                                       weather_model_type=""):
@@ -284,7 +311,7 @@ def extract_and_save_surface_forcings(output_folder_path: str, start_date: str, 
 
     process_variable('U', 'u10')
     process_variable('V', 'v10')
-    process_variable('GLOB', 'swdown')
+    swdown = process_variable('GLOB', 'swdown')
 
     atemp = process_variable('T_2M', 'atemp')
     apress = process_variable('PS', 'apressure')
@@ -296,7 +323,13 @@ def extract_and_save_surface_forcings(output_folder_path: str, start_date: str, 
     write_binary(os.path.join(output_folder_path, 'aqh.bin'), aqh)
 
     print('Computing longwave radiation (lwdown)...')
+
     clct = process_variable('CLCT', 'clct')
+
+    # test to use simstrat clct data instead of cosmo/icon
+    #clct = get_cloud_from_simstrat_input(start_date, end_date, mitgcm_grid)
+    #write_binary(os.path.join(output_folder_path, f'clct.bin'), clct)
+
     lwr = compute_longwave_radiation(atemp, relhum, clct)
     print('Saving lwdown...')
     write_binary(os.path.join(output_folder_path, 'lwdown.bin'), lwr)
