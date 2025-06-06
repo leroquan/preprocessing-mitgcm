@@ -101,16 +101,16 @@ def save_grid(folder_path_out: str, x: np.array(float), y: np.array(float), x_ro
 
 
 def build_grid(nx: int, ny: int, x_resolution: int, y_resolution: int,
-               x0_sg: float, y0_sg: float, x1_sg: float, y1_sg: float) \
+               x0_crs_ini: float, y0_crs_ini: float, x1_crs_ini: float, y1_crs_ini: float, crs_ini: str = "EPSG:21781") \
         -> (np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray):
     x, y, xgrid, ygrid = create_regular_grid(nx, ny, x_resolution, y_resolution)
-    xsg, ysg = translate_grid(x, y, x0_sg, y0_sg)
-    xsg_grid, ysg_grid = np.meshgrid(xsg, ysg)
+    x_crs_ini, y_crs_ini = translate_grid(x, y, x0_crs_ini, y0_crs_ini)
+    xsg_grid, ysg_grid = np.meshgrid(x_crs_ini, y_crs_ini)
 
-    rotation_angle = get_grid_angle(x0_sg, y0_sg, x1_sg, y1_sg)
-    x_rotated, y_rotated = rotate_grid(xsg_grid, ysg_grid, x0_sg, y0_sg, rotation_angle)
+    rotation_angle = get_grid_angle(x0_crs_ini, y0_crs_ini, x1_crs_ini, y1_crs_ini)
+    x_rotated, y_rotated = rotate_grid(xsg_grid, ysg_grid, x0_crs_ini, y0_crs_ini, rotation_angle)
 
-    coord_converter = Transformer.from_crs("EPSG:21781", "EPSG:4326", always_xy=True)
+    coord_converter = Transformer.from_crs(crs_ini, "EPSG:4326", always_xy=True)
     lon_grid, lat_grid = coord_converter.transform(x_rotated, y_rotated)
 
     return x, y, x_rotated, y_rotated, lat_grid, lon_grid
