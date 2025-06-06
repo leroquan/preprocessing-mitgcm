@@ -14,7 +14,9 @@ class Paths:
 class ConfigObject:
     def __init__(self, config_file_path):
         with open(config_file_path, 'r') as file:
-            current_project = json.load(file)["current_project"]
+            config = json.load(file)
+
+        current_project = config["current_project"]
 
         self.lake_name = current_project['lake_name']
         self.grid_config_name = current_project['grid_config_name']
@@ -26,22 +28,19 @@ class ConfigObject:
         self.template_folder = current_project['template_folder']
         self.with_pickup = eval(current_project['with_pickup'])
 
-        with open(config_file_path, 'r') as file:
-            grid_config = json.load(file)["grid_config"][self.lake_name][self.grid_config_name]
+        self.shoreline_path = config["grid_config"][self.lake_name]["shoreline_path"]
 
-        with open(config_file_path, 'r') as file:
-            weather_model_config = json.load(file)["weather_model_config"][self.weather_model]
-
-        with open(config_file_path, 'r') as file:
-            computer_config = json.load(file)["computer_config"][self.computer_config]
+        grid_config = config["grid_config"][self.lake_name][self.grid_config_name]
+        weather_model_config = config["weather_model_config"][self.weather_model]
+        computer_config = config["computer_config"][self.computer_config]
 
         # Grid parameters
         self.grid_resolution = grid_config['grid_resolution']
         self.time_step = grid_config['time_step']
-        self.x0_ch1903 = grid_config["x0_ch1903"]
-        self.y0_ch1903 = grid_config["y0_ch1903"]
-        self.x1_ch1903 = grid_config["x1_ch1903"]
-        self.y1_ch1903 = grid_config["y1_ch1903"]
+        self.x0_epsg2056 = grid_config["x0_epsg2056"]
+        self.y0_epsg2056 = grid_config["y0_epsg2056"]
+        self.x1_epsg2056 = grid_config["x1_epsg2056"]
+        self.y1_epsg2056 = grid_config["y1_epsg2056"]
         self.Nx = grid_config["Nx"]
         self.Ny = grid_config["Ny"]
 
