@@ -171,30 +171,37 @@
     }
   },
   "computer_config": {
-    "cscs_geneva_400m": {
-      "Px": 36,
-      "Py": 16,
-      "endian_type": "big_endian"
+    "cscs": {
+      "endian_type": "big_endian",
+      "geneva": {
+        "50m": {
+          "Px": 48,
+          "Py": 12
+        },
+        "400m": {
+          "Px": 36,
+          "Py": 16
+        }
+      }
     },
-    "cscs_geneva": {
-      "Px": 48,
-      "Py": 12,
-      "endian_type": "big_endian"
-    },
-    "kball_laken_geneva": {
-      "Px": 12,
-      "Py": 3,
-      "endian_type": "big_endian"
-    },
-    "kball_laken_geneva_1000m": {
-      "Px": 10,
-      "Py": 5,
-      "endian_type": "big_endian"
-    },
-    "kball_laken_zurich": {
-      "Px": 6,
-      "Py": 6,
-      "endian_type": "big_endian"
+    "kball_laken": {
+      "endian_type": "big_endian",
+      "geneva": {
+        "200m": {
+          "Px": 12,
+          "Py": 3
+        },
+        "1000m": {
+          "Px": 10,
+          "Py": 5
+        }
+      },
+      "zurich": {
+        "200m": {
+          "Px": 6,
+          "Py": 6
+        }
+      }
     }
   }
 }

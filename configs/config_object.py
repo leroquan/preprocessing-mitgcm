@@ -46,9 +46,9 @@ class ConfigObject:
         self.Ny = grid_config["Ny"]
 
         # Computer parameters
-        self.Px = computer_config["Px"]
-        self.Py = computer_config["Py"]
         self.endian_type = computer_config["endian_type"]
+        self.Px = computer_config[self.lake_name][self.grid_config_name]["Px"]
+        self.Py = computer_config[self.lake_name][self.grid_config_name]["Py"]
 
         # Lake characteristics
         self.lake_altitude = grid_config["lake_altitude"]
