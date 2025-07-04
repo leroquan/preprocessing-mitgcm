@@ -29,6 +29,7 @@ class ConfigObject:
         self.with_pickup = eval(current_project['with_pickup'])
 
         self.shoreline_path = config["grid_config"][self.lake_name]["shoreline_path"]
+        self.epsg_projection = config["grid_config"][self.lake_name]["epsg_projection"]
 
         grid_config = config["grid_config"][self.lake_name][self.grid_config_name]
         weather_model_config = config["weather_model_config"][self.weather_model]
@@ -37,10 +38,10 @@ class ConfigObject:
         # Grid parameters
         self.grid_resolution = grid_config['grid_resolution']
         self.time_step = grid_config['time_step']
-        self.x0_epsg2056 = grid_config["x0_epsg2056"]
-        self.y0_epsg2056 = grid_config["y0_epsg2056"]
-        self.x1_epsg2056 = grid_config["x1_epsg2056"]
-        self.y1_epsg2056 = grid_config["y1_epsg2056"]
+        self.x0 = grid_config["x0"]
+        self.y0 = grid_config["y0"]
+        self.x1 = grid_config["x1"]
+        self.y1 = grid_config["y1"]
         self.Nx = grid_config["Nx"]
         self.Ny = grid_config["Ny"]
 
