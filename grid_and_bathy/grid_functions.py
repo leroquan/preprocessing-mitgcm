@@ -81,7 +81,7 @@ def rotate_grid(x: np.ndarray, y: np.ndarray, x0: float, y0: float, rotation_ang
 
 
 def save_grid(folder_path_out: str, x: np.array(float), y: np.array(float), x_rotated: np.array(float),
-              y_rotated: np.array(float), lat_grid: np.array(float), lon_grid: np.array(float)):
+              y_rotated: np.array(float), lat_grid: np.array(float), lon_grid: np.array(float), crs_ini: str = "21781"):
     if not os.path.exists(folder_path_out):
         os.makedirs(folder_path_out)
         print(f"Directory '{folder_path_out}' created.")
@@ -90,9 +90,9 @@ def save_grid(folder_path_out: str, x: np.array(float), y: np.array(float), x_ro
         np.save(f, x)
     with open(os.path.join(folder_path_out, 'y.npy'), 'wb') as f:
         np.save(f, y)
-    with open(os.path.join(folder_path_out, 'x_sg_grid.npy'), 'wb') as f:
+    with open(os.path.join(folder_path_out, f'x_epsg{crs_ini}_grid.npy'), 'wb') as f:
         np.save(f, x_rotated)
-    with open(os.path.join(folder_path_out, 'y_sg_grid.npy'), 'wb') as f:
+    with open(os.path.join(folder_path_out, f'y_epsg{crs_ini}_grid.npy'), 'wb') as f:
         np.save(f, y_rotated)
     with open(os.path.join(folder_path_out, 'lat_grid.npy'), 'wb') as f:
         np.save(f, lat_grid)
@@ -100,26 +100,29 @@ def save_grid(folder_path_out: str, x: np.array(float), y: np.array(float), x_ro
         np.save(f, lon_grid)
 
 
-def build_grid(nx: int, ny: int, x_resolution: int, y_resolution: int,
-               x0_crs_ini: float, y0_crs_ini: float, x1_crs_ini: float, y1_crs_ini: float, crs_ini: str = "EPSG:21781") \
-        -> (np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray):
-    x, y, xgrid, ygrid = create_regular_grid(nx, ny, x_resolution, y_resolution)
-    x_crs_ini, y_crs_ini = translate_grid(x, y, x0_crs_ini, y0_crs_ini)
-    xsg_grid, ysg_grid = np.meshgrid(x_crs_ini, y_crs_ini)
+def build_grid(nx: int, ny: int, resolution_x: int, resolution_y: int,
+               x0: float, y0: float, x1: float, y1: float,
+               crs_ini: str = "21781", crs_target: str = "4326"):
+    """
+    return x, y, x_rotated, y_rotated, lat_grid, lon_grid
+    """
+    x, y, xgrid, ygrid = create_regular_grid(nx, ny, resolution_x, resolution_y)
+    x_crs_ini, y_crs_ini = translate_grid(x, y, x0, y0)
+    x_grid, y_grid = np.meshgrid(x_crs_ini, y_crs_ini)
 
-    rotation_angle = get_grid_angle(x0_crs_ini, y0_crs_ini, x1_crs_ini, y1_crs_ini)
-    x_rotated, y_rotated = rotate_grid(xsg_grid, ysg_grid, x0_crs_ini, y0_crs_ini, rotation_angle)
+    rotation_angle = get_grid_angle(x0, y0, x1, y1)
+    x_rotated, y_rotated = rotate_grid(x_grid, y_grid, x0, y0, rotation_angle)
 
-    coord_converter = Transformer.from_crs(crs_ini, "EPSG:4326", always_xy=True)
+    coord_converter = Transformer.from_crs(f"EPSG:{crs_ini}", f"EPSG:{crs_target}", always_xy=True)
     lon_grid, lat_grid = coord_converter.transform(x_rotated, y_rotated)
 
     return x, y, x_rotated, y_rotated, lat_grid, lon_grid
 
 
-def build_and_save_mitgcm_grid(folder_path_out: str, nx: int, ny: int, grid_resolution: int, x0_sg: float, y0_sg: float,
-                               x1_sg: float, y1_sg: float):
+def build_and_save_mitgcm_grid(folder_path_out: str, nx: int, ny: int, grid_resolution: int, x0: float, y0: float,
+                               x1: float, y1: float, crs_ini: str = "21781", crs_target: str = "4326"):
     x, y, x_rotated, y_rotated, lat_grid, lon_grid = build_grid(nx, ny, grid_resolution, grid_resolution,
-                                                                x0_sg, y0_sg, x1_sg, y1_sg)
+                                                                x0, y0, x1, y1, crs_ini, crs_target)
     save_grid(folder_path_out, x, y, x_rotated, y_rotated, lat_grid, lon_grid)
 
 
