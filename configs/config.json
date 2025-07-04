@@ -123,7 +123,26 @@
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zurich\\50m\\bathy.bin",
         "swiss_topo_path": "C:\\Users\\leroquan\\Documents\\Data\\bathymetry\\zurich"
       }
-    }
+    },
+    "lucerne": {
+      "shoreline_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\lucerne_shoreline.txt",
+      "epsg_projection": "2056",
+      "100m": {
+        "grid_resolution": 100,
+        "time_step": 16,
+        "x0": 662600,
+        "y0": 200600,
+        "x1": 691400,
+        "y1": 192200,
+        "Nx": 288,
+        "Ny": 180,
+        "lake_altitude": 434,
+        "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\dz_lucerne.csv",
+        "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\100m",
+        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\100m\\bathy.bin",
+        "swiss_topo_path": "C:\\Users\\leroquan\\Documents\\Data\\bathymetry\\lucerne"
+      }
+  }
   },
   "weather_model_config": {
     "icon": {
