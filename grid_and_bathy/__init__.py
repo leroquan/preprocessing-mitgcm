@@ -4,4 +4,5 @@ from .grid_functions import (get_grid,
                              get_dz_grid,
                              MitgcmGrid,
                              get_grid_angle,
-                             rotate_grid)
+                             rotate_grid,
+                             translate_grid)
