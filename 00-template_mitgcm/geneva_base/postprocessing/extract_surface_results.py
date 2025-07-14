@@ -3,7 +3,7 @@ import xmitgcm as xm
 import numpy as np
 import os
 
-ds = xm.open_mdsdataset("./", ref_date="2024-03-01 0:0:0", prefix='3Dsnaps', delta_t=32, endian=">")
+ds = xm.open_mdsdataset("../run", ref_date="!formatted_ref_date!", prefix='3Dsnaps', delta_t=!time_step!, endian=">")
 
 ds_crop = ds[['THETA','UVEL','VVEL']].isel(Z=0)
 

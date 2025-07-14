@@ -3,7 +3,7 @@ import xmitgcm as xm
 import numpy as np
 import os
 
-ds = xm.open_mdsdataset("./", ref_date="2024-03-01 0:0:0", prefix='heatflux', delta_t=32, endian=">")
+ds = xm.open_mdsdataset("../run", ref_date="!formatted_ref_date!", prefix='heatflux', delta_t=!time_step!, endian=">")
 
 output_dir = "../crop_results"
 os.makedirs(output_dir, exist_ok=True)
