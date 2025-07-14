@@ -3,12 +3,13 @@ import os
 
 
 class Paths:
-    def __init__(self, config, grid_config, weather_model_config):
+    def __init__(self, config_object, config, grid_config, weather_model_config):
         self.grid_folder_path = grid_config['grid_folder_path']
         self.dz_grid_csv_path = grid_config['dz_grid_csv_path']
         self.bathy_path = grid_config['bathy_path']
-        self.swiss_topo_path = grid_config['swiss_topo_path']
-        self.raw_weather_folder = os.path.join(weather_model_config['raw_results_from_api_folder'], config.lake_name)
+        self.raw_bathy_path = config["grid_config"][config_object.lake_name]['raw_bathy_path']
+        self.raw_weather_folder = os.path.join(weather_model_config['raw_results_from_api_folder'],
+                                               config_object.lake_name)
 
 
 class ConfigObject:
@@ -59,7 +60,7 @@ class ConfigObject:
         self.weather_model_type = weather_model_config['type']
 
         # Paths
-        self.paths = Paths(self, grid_config, weather_model_config)
+        self.paths = Paths(self, config, grid_config, weather_model_config)
 
     def write_metadata_to_file(self, output_file_path):
         with open(output_file_path, 'w') as file:
