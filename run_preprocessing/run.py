@@ -52,3 +52,14 @@ def write_size_config_files(size_config_path: str, Px: int, Py: int, Nx: int, Ny
     modify_arguments('!sNx!', [sNx], size_config_path)
     modify_arguments('!sNy!', [sNy], size_config_path)
 
+
+def write_secchi(swfrac_path, secchi_depths):
+    depths = "_RL secchiDepths({})".format(len(secchi_depths))
+    secchi = "DATA secchiDepths / {} _d 0".format(secchi_depths[0])
+    for i in range(1, len(secchi_depths)):
+        secchi = secchi + ",\n     &                    {} _d 0".format(secchi_depths[i])
+    secchi = secchi + " /"
+
+    modify_arguments('!depths!', depths, swfrac_path)
+    modify_arguments('!secchi!', secchi, swfrac_path)
+

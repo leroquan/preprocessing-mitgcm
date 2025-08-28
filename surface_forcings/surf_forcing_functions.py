@@ -176,8 +176,7 @@ def interp_concat_json(folder_json_path, data_type, str_start_date, str_end_date
     if weather_model_type == "forecast":
         data_type += "_MEAN"
 
-    with Pool(parallel_n) as pool:
-        all_data = pool.starmap(interp_to_grid, [(file, data_type, mitgcm_grid) for file in json_files])
+    all_data = [interp_to_grid(file, data_type, mitgcm_grid) for file in json_files]
 
     all_data = xr.concat(all_data, dim='T').sortby('T')
 
