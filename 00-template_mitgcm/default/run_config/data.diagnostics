@@ -27,7 +27,7 @@
 # do not specify levels => all levels are selected
   fileName(1) = '3Dsnaps',
 # velocity and temperature output in the entire domain every hour 
-  frequency(1) = 3600.0,
+  frequency(1) = -3600.0,
 
  &
 
