@@ -2,20 +2,22 @@
   "current_project": {
     "lake_name": "lucerne",
     "grid_config_name": "100m",
-    "start_date": "20240501",
-    "end_date": "20240503",
-    "reference_date": "20240501",
+    "start_date": "20250701",
+    "end_date": "20250825",
+    "reference_date": "20250701",
     "weather_model": "continuous_reanalysis",
     "computer_config": "kball_laken",
-    "template_folder": "exch2",
-    "with_pickup": "False"
+    "template_folder": "default",
+    "initialization_type": "simstrat"
   },
   "grid_config": {
     "geneva": {
       "epsg_projection": "2056",
-      "shoreline_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\Geneva\\shoreline.txt",
+      "shoreline_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\shoreline_epsg2056.txt",
       "raw_bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\bathymetry\\geneva\\merged_epsg2056.tif",
       "no_data_raw_bathy": 0,
+      "lake_altitude": 372,
+      "secchi": [6.8,6.5,6.3,6.0,5.0,4.5,4.0,4.0,4.0,4.0,6.0,6.0],
       "1000m": {
         "grid_resolution": 1000,
         "time_step": 64,
@@ -25,8 +27,6 @@
         "y1": 1138700,
         "Nx": 70,
         "Ny": 25,
-        "lake_altitude": 372,
-        "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\z-grid\\dz_geneva.csv",
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\1000m",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\1000m\\bathy.bin"
       },
@@ -39,22 +39,18 @@
         "y1": 1138700,
         "Nx": 180,
         "Ny": 80,
-        "lake_altitude": 372,
-        "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\z-grid\\dz_geneva.csv",
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\400m",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\400m\\bathy_geneva_400m.bin"
       },
       "200m": {
         "grid_resolution": 200,
-        "time_step": 32,
+        "time_step": 30,
         "x0": 2500000,
         "y0": 1116500,
         "x1": 2563000,
         "y1": 1138700,
         "Nx": 336,
         "Ny": 132,
-        "lake_altitude": 372,
-        "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\z-grid\\dz_geneva.csv",
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\200m",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\200m\\bathy.bin"
       },
@@ -67,8 +63,6 @@
         "y1": 1138700,
         "Nx": 672,
         "Ny": 264,
-        "lake_altitude": 372,
-        "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\z-grid\\dz_geneva.csv",
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\100m",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\Instructions Fazel\\binary_data\\template_bathymetry\\bathyGeneva_100m.bin"
       },
@@ -81,8 +75,6 @@
         "y1": 1138700,
         "Nx": 1344,
         "Ny": 528,
-        "lake_altitude": 372,
-        "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\z-grid\\dz_geneva.csv",
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\50m",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\50m\\bathy_geneva_50m_big_endian.bin"
       }
@@ -91,6 +83,9 @@
       "epsg_projection": "2056",
       "shoreline_path": "\"C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zurich\\zurich_shoreline.txt\"",
       "raw_bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\bathymetry\\zurich\\??.tif",
+      "no_data_raw_bathy": 0,
+      "lake_altitude": 406,
+      "secchi": [6.8,6.5,6.3,6.0,5.0,4.5,4.0,4.0,4.0,4.0,6.0,6.0],
       "200m": {
         "grid_resolution": 200,
         "time_step": 32,
@@ -100,8 +95,6 @@
         "y1": 1222000,
         "Nx": 180,
         "Ny": 60,
-        "lake_altitude": 406,
-        "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zurich\\z-grid\\dz_zurich.csv",
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zurich\\200m",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zurich\\200m\\bathy.bin"
       },
@@ -114,8 +107,6 @@
         "y1": 1222000,
         "Nx": 720,
         "Ny": 240,
-        "lake_altitude": 406,
-        "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zurich\\z-grid\\dz_zurich.csv",
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zurich\\50m",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zurich\\50m\\bathy.bin"
       }
@@ -125,19 +116,19 @@
       "shoreline_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\lucerne_shoreline.txt",
       "raw_bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\bathymetry\\lucerne\\merged_swissbathy3d.tif",
       "no_data_raw_bathy": -9999,
+      "lake_altitude": 434,
+      "secchi": [13.6,13.0,12.6,12.0,10.0,9.0,8.0,8.0,8.0,8.0,12.0,12.0],
       "100m": {
         "grid_resolution": 100,
-        "time_step": 16,
+        "time_step": 25,
         "x0": 2662600,
         "y0": 1200600,
         "x1": 2691400,
         "y1": 1192200,
         "Nx": 288,
         "Ny": 180,
-        "lake_altitude": 434,
-        "dz_grid_csv_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\dz_lucerne.csv",
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\100m",
-        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\100m\\bathy.bin"
+        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\100m\\bathy_corrected.bin"
       }
   }
   },
@@ -161,22 +152,43 @@
       "type": "reanalysis"
     },
     "continuous_reanalysis": {
-      "base_url": "https://alplakes-internal-api.eawag.ch/meteoswiss/cosmo/area/reanalysis/VNXQ34",
+      "base_url": "https://alplakes-internal-api.eawag.ch/meteoswiss/icon/area/reanalysis/kenda-ch1",
       "raw_results_from_api_folder": "C:\\Users\\leroquan\\Documents\\Data\\meteo\\continuous_reanalysis\\raw_from_alplakes_api",
       "buffer": 0.02,
       "type": "reanalysis"
     }
   },
   "computer_config": {
-    "cscs": {
+    "cscs-daint": {
       "endian_type": "big_endian",
       "geneva": {
         "50m": {
           "Px": 48,
           "Py": 12
         },
+        "100m": {
+          "Px": 48,
+          "Py": 12
+        },
+        "200m": {
+          "Px": 48,
+          "Py": 12
+        },
         "400m": {
           "Px": 36,
+          "Py": 16
+        }
+      }
+    },
+    "cscs-eiger": {
+      "endian_type": "big_endian",
+      "geneva": {
+        "50m": {
+          "Px": 32,
+          "Py": 16
+        },
+        "200m": {
+          "Px": 32,
           "Py": 16
         }
       }

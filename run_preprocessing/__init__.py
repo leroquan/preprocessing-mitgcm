@@ -1,1 +1,1 @@
-from .run import (write_data_config_files, copy_template, remove_all_files_and_folders, write_size_config_files)
+from .run import (write_data_config_files, write_secchi, copy_template, remove_all_files_and_folders, write_size_config_files)
