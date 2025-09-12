@@ -9,7 +9,6 @@ import requests
 import re
 from datetime import datetime, timedelta
 from grid_and_bathy import MitgcmGrid
-from multiprocessing import Pool
 from concurrent.futures import ThreadPoolExecutor
 
 
@@ -124,7 +123,7 @@ def select_first_24h(parsed_times: np.array(datetime), data: np.array):
     return parsed_times, data
 
 
-def interp_to_grid(json_file: str, data_type: str, mitgcm_grid: MitgcmGrid):
+def interp_to_grid(json_file: str, data_type: str, mitgcm_grid: MitgcmGrid, weather_model_type: str = ""):
     # Load JSON data once with orjson
     json_data = load_json(json_file)
 
@@ -138,7 +137,10 @@ def interp_to_grid(json_file: str, data_type: str, mitgcm_grid: MitgcmGrid):
     coord_raw_data = np.column_stack((lat.flatten(), lon.flatten()))
 
     data = extract_data_from_json(json_data, json_file, data_type)
-    filtered_parsed_times, filtered_data = select_first_24h(parsed_times, data)
+    if weather_model_type == 'forecast':
+        filtered_parsed_times, filtered_data = parsed_times, data
+    else:
+        filtered_parsed_times, filtered_data = select_first_24h(parsed_times, data)
 
     # Interpolate over all time steps (first 24h)
     data_interp = [
@@ -168,15 +170,15 @@ def filter_json_files_by_date(all_json_files: list[str], str_start_date: str, st
     return list(filter(is_within_range, all_json_files))
 
 
-def interp_concat_json(folder_json_path, data_type, str_start_date, str_end_date, mitgcm_grid, parallel_n,
+def interp_concat_json(folder_json_path, data_type, str_start_date, str_end_date, mitgcm_grid,
                        weather_model_type=""):
     all_json_files = glob.glob(os.path.join(folder_json_path, f'*_{data_type}.json'))
     json_files = filter_json_files_by_date(all_json_files, str_start_date, str_end_date)
 
-    if weather_model_type == "forecast":
-        data_type += "_MEAN"
+    #if weather_model_type == "forecast":
+    #    data_type += "_MEAN"
 
-    all_data = [interp_to_grid(file, data_type, mitgcm_grid) for file in json_files]
+    all_data = [interp_to_grid(file, data_type, mitgcm_grid, weather_model_type) for file in json_files]
 
     all_data = xr.concat(all_data, dim='T').sortby('T')
 
@@ -235,7 +237,7 @@ def compute_vapor_pressure(atemp, relhum):
     return rh_fraction * saturation_vapor_pressure  # vapor pressure in mbar (=hPa)
 
 
-def compute_longwave_radiation(atemp, relhum, cloud_cover):
+def compute_longwave_radiation(atemp, relhum, cloud_cover, a = 1.09):
     """
     Compute longwave radiation from air temperature and cloud cover.
 
@@ -246,7 +248,7 @@ def compute_longwave_radiation(atemp, relhum, cloud_cover):
     cloud_cover = cloud_cover/100
     vaporPressure = compute_vapor_pressure(atemp, relhum)  # in units mbar
     A_L = 0.03   # Infrared radiation albedo
-    a = 1.09     # Calibration parameter
+    #a = 1.03 #1.09     # Calibration parameter
 
     E_a = a * (1 + 0.17 * np.power(cloud_cover, 2)) * 1.24 * np.power(vaporPressure / atemp, 1./7)  # emissivity
 
@@ -282,7 +284,8 @@ def get_cloud_from_simstrat_input(start_date, end_date, mitgcm_grid):
 
 
 def extract_and_save_surface_forcings(output_folder_path: str, start_date: str, end_date: str,
-                                      path_raw_weather_folder: str, mitgcm_grid: MitgcmGrid, parallel_n: int,
+                                      path_raw_weather_folder: str, mitgcm_grid: MitgcmGrid,
+                                      a_lw: float,
                                       weather_model_type=""):
     """
     Extract surface forcings from json files coming from the Alplakes API and save them as binary files for MITgcm use.
@@ -300,7 +303,7 @@ def extract_and_save_surface_forcings(output_folder_path: str, start_date: str, 
 
     def process_variable(var_name, output_name):
         print(f'Interpolating {var_name} to grid...')
-        data = interp_concat_json(path_raw_weather_folder, var_name, start_date, end_date, mitgcm_grid, parallel_n,
+        data = interp_concat_json(path_raw_weather_folder, var_name, start_date, end_date, mitgcm_grid,
                                   weather_model_type)
         # data = data.fillna(0)  # Handle missing values early
         print(f'Saving {output_name}...')
@@ -329,7 +332,7 @@ def extract_and_save_surface_forcings(output_folder_path: str, start_date: str, 
     #clct = get_cloud_from_simstrat_input(start_date, end_date, mitgcm_grid)
     #write_binary(os.path.join(output_folder_path, f'clct.bin'), clct)
 
-    lwr = compute_longwave_radiation(atemp, relhum, clct)
+    lwr = compute_longwave_radiation(atemp, relhum, clct, a_lw)
     print('Saving lwdown...')
     write_binary(os.path.join(output_folder_path, 'lwdown.bin'), lwr)
 
