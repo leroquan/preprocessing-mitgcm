@@ -34,6 +34,7 @@ class ConfigObject:
         self.no_data_raw_bathy = lake_config["no_data_raw_bathy"]
         self.lake_altitude = lake_config["lake_altitude"]
         self.secchi = lake_config["secchi"]
+        self.a_lw = lake_config["a_lw"]
 
         # Grid parameters
         grid_config = config["grid_config"][self.lake_name][self.grid_config_name]
