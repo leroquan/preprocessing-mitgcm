@@ -2,28 +2,35 @@ import numpy as np
 import glob
 import os
 
-def modify_arguments(param_name: str, values: np.array, file_path):
-    '''
+def modify_arguments(param_name: str, values, file_path, wrap=9):
+    """
     Function to modify run-time parameters, based on variable name, with the
     assumption that they are stored the file as '!varName!'
       param_name  - parameter name that should be replaced in the config file
       values - values replacing the param_name in the config file
       fileIn  - 00-template_mitgcm configuration
       fileOut - output run-time configuration
-    '''
+    """
 
     with open(file_path, 'r') as infile:
         content = infile.read()
 
-    str_values = ''
-    if len(values) > 1:
-        for row in values:
-            for val in row:
-                if val != np.nan:
-                    str_values += str(str(val) + ',')
-            str_values += '\n'
+    if isinstance(values, np.ndarray):
+        if values.ndim == 1:
+            lines = []
+            for i in range(0, len(values), wrap):
+                chunk = values[i:i + wrap]
+                line_str = ",".join(str(v) for v in chunk if not np.isnan(v))
+                lines.append(line_str)
+            str_values = "\n".join(lines)
+        else:
+            lines = []
+            for row in values:
+                row_str = ",".join(str(v) for v in row if not np.isnan(v))
+                lines.append(row_str)
+            str_values = "\n".join(lines)
     else:
-        str_values = str(values[0])
+        str_values = str(values)
 
     modified_content = content.replace(param_name, str_values)
 
