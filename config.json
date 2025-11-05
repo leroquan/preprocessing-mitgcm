@@ -1,13 +1,13 @@
 {
   "current_project": {
-    "lake_name": "geneva",
-    "grid_config_name": "200m",
+    "lake_name": "lucerne",
+    "grid_config_name": "100m",
     "start_date": "20250701",
-    "end_date": "20250707",
+    "end_date": "20251010",
     "reference_date": "20250701",
     "weather_model": "icon",
     "computer_config": "kball_laken",
-    "template_folder": "exch2",
+    "template_folder": ["default", "exch2", "postprocessing"],
     "initialization_type": "simstrat"
   },
   "grid_config": {
@@ -50,6 +50,19 @@
         "y0": 1116500,
         "x1": 2563000,
         "y1": 1138700,
+        "rotation": 19.411486858683578,
+        "Nx": 336,
+        "Ny": 132,
+        "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\200m",
+        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\200m\\bathy.bin"
+      },
+      "200m_reiss": {
+        "grid_resolution": 200,
+        "time_step": 15,
+        "x0": 2500000,
+        "y0": 1116500,
+        "x1": 2563000,
+        "y1": 1138700,
         "Nx": 336,
         "Ny": 132,
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\200m",
@@ -74,6 +87,7 @@
         "y0": 1116500,
         "x1": 2563000,
         "y1": 1138700,
+        "rotation": 19.411486858683578,
         "Nx": 1344,
         "Ny": 528,
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\50m",
@@ -119,8 +133,8 @@
       "raw_bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\bathymetry\\lucerne\\merged_swissbathy3d.tif",
       "no_data_raw_bathy": -9999,
       "lake_altitude": 434,
-      "secchi": [13.6,13.0,12.6,12.0,10.0,9.0,8.0,8.0,8.0,8.0,12.0,12.0],
-      "a_lw": 1.03,
+      "secchi": [6.8,6.5,6.3,6.0,5.0,4.5,4.0,4.0,4.0,4.0,6.0,6.0],
+      "a_lw": 0.8,
       "100m": {
         "grid_resolution": 100,
         "time_step": 25,
@@ -128,12 +142,35 @@
         "y0": 1200600,
         "x1": 2691400,
         "y1": 1192200,
+        "rotation": -16.26020470831196,
         "Nx": 288,
         "Ny": 180,
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\100m",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\100m\\bathy_corrected.bin"
       }
-  }
+  },
+    "dummy_rectangle": {
+      "epsg_projection": "2056",
+      "shoreline_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\dummy_rectangle\\shoreline_epsg2056.txt",
+      "raw_bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\bathymetry\\dummy_rectangle\\dummy_bathy.tif",
+      "no_data_raw_bathy": -9999,
+      "lake_altitude": 0,
+      "secchi": [10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0],
+      "a_lw": 0.9,
+      "200m": {
+        "grid_resolution": 200,
+        "time_step": 30,
+        "x0": 2600000,
+        "y0": 1130000,
+        "x1": 2605000,
+        "y1": 1130000,
+        "rotation":0,
+        "Nx": 25,
+        "Ny": 15,
+        "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\dummy_rectangle\\200m",
+        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\dummy_rectangle\\200m\\bathy.bin"
+      }
+    }
   },
   "weather_model_config": {
     "icon": {
@@ -162,7 +199,7 @@
     }
   },
   "computer_config": {
-    "cscs-daint": {
+    "cscs_daint": {
       "endian_type": "big_endian",
       "geneva": {
         "50m": {
@@ -177,13 +214,17 @@
           "Px": 48,
           "Py": 12
         },
+        "200m_reiss": {
+          "Px": 48,
+          "Py": 12
+        },
         "400m": {
           "Px": 36,
           "Py": 16
         }
       }
     },
-    "cscs-eiger": {
+    "cscs_eiger": {
       "endian_type": "big_endian",
       "geneva": {
         "50m": {
@@ -218,6 +259,12 @@
         "100m": {
           "Px": 6,
           "Py": 6
+        }
+      },
+      "dummy_rectangle": {
+        "200m": {
+          "Px": 5,
+          "Py": 3
         }
       }
     }
