@@ -44,6 +44,7 @@ class ConfigObject:
         self.y0 = grid_config["y0"]
         self.x1 = grid_config["x1"]
         self.y1 = grid_config["y1"]
+        self.rotation = grid_config["rotation"]
         self.Nx = grid_config["Nx"]
         self.Ny = grid_config["Ny"]
 
