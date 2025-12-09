@@ -101,7 +101,7 @@ def save_grid(folder_path_out: str, x: np.array(float), y: np.array(float), x_ro
 
 
 def build_grid(nx: int, ny: int, resolution_x: int, resolution_y: int,
-               x0: float, y0: float, x1: float, y1: float,
+               x0: float, y0: float, rotation_angle,
                crs_ini: str = "21781", crs_target: str = "4326"):
     """
     return x, y, x_rotated, y_rotated, lat_grid, lon_grid
@@ -110,7 +110,6 @@ def build_grid(nx: int, ny: int, resolution_x: int, resolution_y: int,
     x_crs_ini, y_crs_ini = translate_grid(x, y, x0, y0)
     x_grid, y_grid = np.meshgrid(x_crs_ini, y_crs_ini)
 
-    rotation_angle = get_grid_angle(x0, y0, x1, y1)
     x_rotated, y_rotated = rotate_grid(x_grid, y_grid, x0, y0, rotation_angle)
 
     coord_converter = Transformer.from_crs(f"EPSG:{crs_ini}", f"EPSG:{crs_target}", always_xy=True)
@@ -130,3 +129,19 @@ def get_dz_grid(dz_grid_file_path: str) -> np.array:
     dz_grid = pd.read_csv(dz_grid_file_path, header=None).to_numpy()
 
     return dz_grid
+
+from configs.config_object import ConfigObject
+def convert_point_coord_to_mitgcm_coord(x_point, y_point, point_epsg_projection, config: ConfigObject):
+    crs_target = '2056'
+    config_coord_converter = Transformer.from_crs(f"EPSG:{config.epsg_projection}", f"EPSG:{crs_target}", always_xy=True)
+
+    (x0, y0) = config_coord_converter.transform(config.x0, config.y0)
+    rot_angle_in_radian = np.deg2rad(config.rotation)
+
+    point_coord_converter = Transformer.from_crs(f"EPSG:{point_epsg_projection}", f"EPSG:{crs_target}", always_xy=True)
+    x,y = point_coord_converter.transform(x_point,y_point)
+
+    x_trans, y_trans = translate_grid(x, y, -x0, -y0)
+    x_mitgcm, y_mitgcm = rotate_grid(x_trans, y_trans, 0, 0, -rot_angle_in_radian)
+
+    return x_mitgcm, y_mitgcm
