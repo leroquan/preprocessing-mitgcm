@@ -10,6 +10,16 @@ class Paths:
         self.shoreline_path = lake_config['shoreline_path']
         self.raw_weather_folder = os.path.join(weather_model_config['raw_results_from_api_folder'], lake_name)
 
+class River:
+    def __init__(self, name, river_config):
+        self.name = name,
+        self.bafu_id = river_config['bafu_id']
+        self.discharge_variable_name = river_config['discharge_variable_name']
+        self.temperature_variable_name = river_config['temperature_variable_name']
+        self.coordinates_lake_point = river_config['coordinates_lake_point'],
+        self.angle_from_north_direction = river_config['angle_from_north_direction'],
+        self.in_or_out = river_config['in_or_out']
+        self.river_depth = river_config['river_depth']
 
 class ConfigObject:
     def __init__(self, config_file_path):
@@ -17,7 +27,7 @@ class ConfigObject:
             config = json.load(file)
 
         current_project = config["current_project"]
-
+        self.simulation_name = current_project["simulation_name"]
         self.lake_name = current_project['lake_name']
         self.grid_config_name = current_project['grid_config_name']
         self.start_date = current_project['start_date']
@@ -27,14 +37,28 @@ class ConfigObject:
         self.computer_config = current_project['computer_config']
         self.template_folder = current_project['template_folder']
         self.initialization_type = current_project['initialization_type']
+        self.with_rivers = current_project['with_rivers']
 
         # Lake characteristics
         lake_config = config["grid_config"][self.lake_name]
-        self.epsg_projection = lake_config["epsg_projection"]
+        self.epsg_projection = lake_config.get("epsg_projection", "2056")
         self.no_data_raw_bathy = lake_config["no_data_raw_bathy"]
         self.lake_altitude = lake_config["lake_altitude"]
-        self.secchi = lake_config["secchi"]
-        self.a_lw = lake_config["a_lw"]
+
+        # Lake calibration
+        calibration_config = config['calibration'][self.lake_name]
+        default_parameters = config["calibration"]['default']
+        self.secchi = calibration_config.get("secchi", default_parameters['secchi'])
+        self.a_lw = calibration_config.get("a_lw", default_parameters['a_lw'])
+        self.viscC2smag = calibration_config.get("viscC2smag", default_parameters['viscC2smag'])
+        self.viscAz = calibration_config.get("viscAz", default_parameters['viscAz'])
+        self.diffKzT = calibration_config.get("diffKzT", default_parameters['diffKzT'])
+        self.viscAhGrid = calibration_config.get("viscAhGrid", default_parameters['viscAhGrid'])
+        self.diffKhT = calibration_config.get("diffKhT", default_parameters['diffKhT'])
+        self.exf_albedo = calibration_config.get("exf_albedo", default_parameters['exf_albedo'])
+        self.cdrag_1 = calibration_config.get("cdrag_1", default_parameters['cdrag_1'])
+        self.cdrag_2 = calibration_config.get("cdrag_2", default_parameters['cdrag_2'])
+        self.cdrag_3 = calibration_config.get("cdrag_3", default_parameters['cdrag_3'])
 
         # Grid parameters
         grid_config = config["grid_config"][self.lake_name][self.grid_config_name]
@@ -42,19 +66,23 @@ class ConfigObject:
         self.time_step = grid_config['time_step']
         self.x0 = grid_config["x0"]
         self.y0 = grid_config["y0"]
-        self.x1 = grid_config["x1"]
-        self.y1 = grid_config["y1"]
         self.rotation = grid_config["rotation"]
         self.Nx = grid_config["Nx"]
         self.Ny = grid_config["Ny"]
 
+        # Rivers config
+        river_config = config["river_config"].get(self.lake_name, {})
+        river_objects = []
+        for arg, value in river_config.items():
+            river_objects.append(River(arg, value))
+        self.rivers = river_objects
+
         # Computer parameters
         computer_config = config["computer_config"][self.computer_config]
         self.endian_type = computer_config["endian_type"]
+        self.results_folder = computer_config["results_folder"]
         self.Px = computer_config[self.lake_name][self.grid_config_name]["Px"]
         self.Py = computer_config[self.lake_name][self.grid_config_name]["Py"]
-
-
 
         # Weather model
         weather_model_config = config["weather_model_config"][self.weather_model]

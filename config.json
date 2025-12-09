@@ -1,24 +1,84 @@
 {
   "current_project": {
-    "lake_name": "lucerne",
-    "grid_config_name": "100m",
-    "start_date": "20250701",
-    "end_date": "20251010",
-    "reference_date": "20250701",
+    "simulation_name": "geneva_200m_2025_rivers",
+    "lake_name": "geneva",
+    "grid_config_name": "200m",
+    "start_date": "20250101",
+    "end_date": "20251201",
+    "reference_date": "20250101",
     "weather_model": "icon",
     "computer_config": "kball_laken",
-    "template_folder": ["default", "exch2", "postprocessing"],
-    "initialization_type": "simstrat"
+    "template_folder": ["default", "exch2", "obcs", "crop_results"],
+    "initialization_type": "idronaut",
+    "with_rivers": true
   },
+
+  "available_lakes": ["geneva", "zurich", "lucerne", "neuchatel", "dummy_rectangle"],
+  "available_templates": ["default", "exch2", "obcs", "crop_results"],
+  "available_compute_config": ["cscs_daint", "cscs_eiger","kball_laken"],
+
+
+  "calibration": {
+    "default":{
+      "secchi": [6.8,6.5,6.3,6.0,5.0,4.5,4.0,4.0,4.0,4.0,6.0,6.0],
+      "a_lw": 1,
+      "viscAz": 1e-06,
+      "diffKzT": 1.4e-07,
+      "viscC2smag": 0.3,
+      "viscAhGrid": 0.00015142478199073935,
+      "diffKhT": 0.02366012218605303,
+      "exf_albedo": 0.066,
+      "cdrag_1": 0.0027,
+      "cdrag_2": 0.000142,
+      "cdrag_3": 0.0000764
+    },
+    "geneva": {
+      "exf_albedo": 0.09,
+      "diffKhT": 0.24,
+      "viscAz": 1e-06,
+      "diffKzT": 1e-06,
+      "viscAhgrid": 0.0125,
+      "viscC2smag": 0.7,
+      "cdrag_1": 0.0018,
+      "cdrag_2": 9.47e-05,
+      "cdrag_3": 5.09e-05
+    },
+    "zurich": {
+      "a_lw": 1.09
+    },
+    "lucerne": {
+      "a_lw": 0.9,
+      "exf_albedo": 0.1,
+      "diffKhT": 0.24,
+      "viscAz": 1e-05,
+      "diffKzT": 1e-05,
+      "viscAhgrid": 0.0125,
+      "viscC2smag": 0.7,
+      "cdrag_1": 0.00135,
+      "cdrag_2": 0.000071,
+      "cdrag_3": 0.0000382
+    },
+    "dummy_rectangle": {
+      "secchi": [10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0],
+      "a_lw": 0.9
+    },
+    "neuchatel": {
+      "secchi": [12,16,14,9,8,7,5,3,4,8,10,11],
+      "albedo": 0.1,
+      "diffKhT": 0.24,
+      "viscAz": 1e-06,
+      "diffKzT": 1e-06,
+      "viscAhgrid": 0.0125,
+      "viscC2smag": 0.7
+    }
+  },
+
   "grid_config": {
     "geneva": {
-      "epsg_projection": "2056",
       "shoreline_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\shoreline_epsg2056.txt",
       "raw_bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\bathymetry\\geneva\\merged_epsg2056.tif",
       "no_data_raw_bathy": 0,
       "lake_altitude": 372,
-      "secchi": [6.8,6.5,6.3,6.0,5.0,4.5,4.0,4.0,4.0,4.0,6.0,6.0],
-      "a_lw": 1.09,
       "1000m": {
         "grid_resolution": 1000,
         "time_step": 64,
@@ -45,16 +105,25 @@
       },
       "200m": {
         "grid_resolution": 200,
-        "time_step": 30,
+        "time_step": 15,
         "x0": 2500000,
         "y0": 1116500,
-        "x1": 2563000,
-        "y1": 1138700,
         "rotation": 19.411486858683578,
         "Nx": 336,
         "Ny": 132,
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\200m",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\200m\\bathy.bin"
+      },
+      "200m_no_rotation": {
+        "grid_resolution": 200,
+        "time_step": 15,
+        "x0": 2500000,
+        "y0": 1116500,
+        "rotation": 0,
+        "Nx": 336,
+        "Ny": 180,
+        "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\200m_no_rotation",
+        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\200m_no_rotation\\bathy.bin"
       },
       "200m_reiss": {
         "grid_resolution": 200,
@@ -85,30 +154,24 @@
         "time_step": 4,
         "x0": 2500000,
         "y0": 1116500,
-        "x1": 2563000,
-        "y1": 1138700,
         "rotation": 19.411486858683578,
         "Nx": 1344,
         "Ny": 528,
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\50m",
-        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\50m\\bathy_geneva_50m_big_endian.bin"
+        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\50m\\bathy.bin"
       }
     },
     "zurich": {
-      "epsg_projection": "2056",
-      "shoreline_path": "\"C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zurich\\zurich_shoreline.txt\"",
+      "shoreline_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zurich\\zurich_shoreline.txt",
       "raw_bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\bathymetry\\zurich\\??.tif",
       "no_data_raw_bathy": 0,
       "lake_altitude": 406,
-      "secchi": [6.8,6.5,6.3,6.0,5.0,4.5,4.0,4.0,4.0,4.0,6.0,6.0],
-      "a_lw": 1.09,
       "200m": {
         "grid_resolution": 200,
         "time_step": 32,
         "x0": 2678200,
         "y0": 1238400,
-        "x1": 2708800,
-        "y1": 1222000,
+        "rotation": -28.074932,
         "Nx": 180,
         "Ny": 60,
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zurich\\200m",
@@ -128,35 +191,38 @@
       }
     },
     "lucerne": {
-      "epsg_projection": "2056",
       "shoreline_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\lucerne_shoreline.txt",
       "raw_bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\bathymetry\\lucerne\\merged_swissbathy3d.tif",
       "no_data_raw_bathy": -9999,
       "lake_altitude": 434,
-      "secchi": [6.8,6.5,6.3,6.0,5.0,4.5,4.0,4.0,4.0,4.0,6.0,6.0],
-      "a_lw": 0.8,
       "100m": {
         "grid_resolution": 100,
         "time_step": 25,
         "x0": 2662600,
         "y0": 1200600,
-        "x1": 2691400,
-        "y1": 1192200,
         "rotation": -16.26020470831196,
         "Nx": 288,
         "Ny": 180,
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\100m",
-        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\100m\\bathy_corrected.bin"
+        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\100m\\bathy.bin"
+      },
+      "50m": {
+        "grid_resolution": 50,
+        "time_step": 15,
+        "x0": 2662600,
+        "y0": 1200600,
+        "rotation": -16.26020470831196,
+        "Nx": 576,
+        "Ny": 360,
+        "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\50m",
+        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\50m\\bathy.bin"
       }
   },
     "dummy_rectangle": {
-      "epsg_projection": "2056",
       "shoreline_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\dummy_rectangle\\shoreline_epsg2056.txt",
       "raw_bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\bathymetry\\dummy_rectangle\\dummy_bathy.tif",
       "no_data_raw_bathy": -9999,
       "lake_altitude": 0,
-      "secchi": [10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0],
-      "a_lw": 0.9,
       "200m": {
         "grid_resolution": 200,
         "time_step": 30,
@@ -170,8 +236,60 @@
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\dummy_rectangle\\200m",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\dummy_rectangle\\200m\\bathy.bin"
       }
+    },
+    "neuchatel": {
+      "shoreline_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\neuchatel\\shoreline_epsg2056.txt",
+      "raw_bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\bathymetry\\neuchatel\\bathy_NE_3m_epsg2056.tif",
+      "no_data_raw_bathy": -9999,
+      "lake_altitude": 429,
+      "200m": {
+        "grid_resolution": 200,
+        "time_step": 15,
+        "x0": 2542100,
+        "y0": 1178000,
+        "rotation": 40,
+        "Nx": 195,
+        "Ny": 48,
+        "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\neuchatel\\200m",
+        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\neuchatel\\200m\\bathy.bin"
+      }
     }
   },
+
+  "river_config": {
+    "geneva": {
+      "rhone-porte_scex": {
+        "bafu_id": 2009,
+        "discharge_variable_name": "AbflussPneumatikunten",
+        "temperature_variable_name": "Wassertemperatur1",
+        "coordinates_lake_point": [2555400, 1138400],
+        "angle_from_north_direction": 330,
+        "in_or_out": "in",
+        "river_depth": 1.5
+      },
+      "rhone-halle_de_l_ile": {
+        "bafu_id": 2606,
+        "discharge_variable_name": "AbflussRisoniclinksvorRollout",
+        "temperature_variable_name": "Wassertemperaturlinks",
+        "coordinates_lake_point": [2500450, 1118000],
+        "angle_from_north_direction": 255,
+        "in_or_out": "out",
+        "river_depth": 1.5
+      }
+    },
+    "dummy_rectangle": {
+      "south-west-corner": {
+        "bafu_id": 2009,
+        "discharge_variable_name": "AbflussPneumatikunten",
+        "temperature_variable_name": "Wassertemperatur1",
+        "coordinates_lake_point": [2600500, 1130500],
+        "angle_from_north_direction": 45,
+        "in_or_out": "in",
+        "river_depth": 3
+      }
+    }
+  },
+
   "weather_model_config": {
     "icon": {
       "base_url": "https://alplakes-internal-api.eawag.ch/meteoswiss/icon/area/reanalysis/kenda-ch1",
@@ -198,13 +316,15 @@
       "type": "reanalysis"
     }
   },
+
   "computer_config": {
     "cscs_daint": {
       "endian_type": "big_endian",
+      "results_folder": "..\\run",
       "geneva": {
         "50m": {
-          "Px": 48,
-          "Py": 12
+          "Px": 56,
+          "Py": 24
         },
         "100m": {
           "Px": 48,
@@ -226,10 +346,11 @@
     },
     "cscs_eiger": {
       "endian_type": "big_endian",
+      "results_folder": "..\\run",
       "geneva": {
         "50m": {
-          "Px": 32,
-          "Py": 16
+          "Px": 48,
+          "Py": 24
         },
         "200m": {
           "Px": 32,
@@ -239,8 +360,13 @@
     },
     "kball_laken": {
       "endian_type": "big_endian",
+      "results_folder": "/storage/alplakes_test",
       "geneva": {
         "200m": {
+          "Px": 8,
+          "Py": 6
+        },
+        "200m_no_rotation": {
           "Px": 12,
           "Py": 3
         },
@@ -259,12 +385,22 @@
         "100m": {
           "Px": 6,
           "Py": 6
+        },
+        "50m": {
+          "Px": 12,
+          "Py": 10
         }
       },
       "dummy_rectangle": {
         "200m": {
           "Px": 5,
           "Py": 3
+        }
+      },
+      "neuchatel": {
+        "200m": {
+          "Px": 5,
+          "Py": 6
         }
       }
     }
