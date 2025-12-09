@@ -5,10 +5,13 @@
 &EXF_NML_01
  exf_iprec           = 64
  useAtmWind          = .TRUE.
- exf_albedo          = 0.066
+ exf_albedo          = !exf_albedo!
  cdalton             = 0.053
  useExfCheckRange    = .FALSE.
  readStressOnCgrid   = .TRUE.
+ cdrag_1 = !cdrag_1!,
+ cdrag_2 = !cdrag_2!,
+ cdrag_3 = !cdrag_3!,
  &
 
  &EXF_NML_02

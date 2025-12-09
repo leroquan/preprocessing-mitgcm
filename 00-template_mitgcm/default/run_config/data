@@ -46,15 +46,15 @@
  f0                          = 1.068e-4
  beta                        = 1e-11
  plotLevel                   = 0
- viscAz                      = 1e-06
- diffKzT                     = 1.4e-07
+ viscAz                      = !viscAz!
+ diffKzT                     = !diffKzT!
 
 ###################################################
 # Parameters to be inferred in the data assimilation framework.
 # viscAhGrid, diffKhT, viscC2smag - grid-dependent parameters for horizontal processes.
- viscC2smag          = 0.3
- viscAhGrid          = 0.00015142478199073935
- diffKhT             = 0.02366012218605303
+ viscC2smag          = !viscC2smag!
+ viscAhGrid          = !viscAhGrid!
+ diffKhT             = !diffKhT!
  &
 
 ###################################################

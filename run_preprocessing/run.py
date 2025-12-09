@@ -32,15 +32,20 @@ def copy_template(template_folder, output_folder):
 
 def write_data_config_files(data_config_path: str, initial_temperature: np.ndarray, initial_salt: np.ndarray,
                             start_time_in_second: int, end_time_in_second: int, pickup_number: str,
-                            dz_grid: np.ndarray, grid_resolution: int, time_step: int):
+                            dz_grid: np.ndarray, config: config_object) -> None:
     modify_arguments('!initial_temperature!', initial_temperature, data_config_path)
     modify_arguments('!initial_salt!', initial_salt, data_config_path)
     modify_arguments('!start_time!', start_time_in_second, data_config_path)
     modify_arguments('!end_time!', end_time_in_second, data_config_path)
     modify_arguments('!pickup_number!', pickup_number, data_config_path)
-    modify_arguments('!grid_resolution!', grid_resolution, data_config_path)
-    modify_arguments('!time_step!', time_step, data_config_path)
     modify_arguments('!dz_grid!', dz_grid, data_config_path)
+    modify_arguments('!grid_resolution!', config.grid_resolution, data_config_path)
+    modify_arguments('!time_step!', config.time_step, data_config_path)
+    modify_arguments('!viscAz!', config.viscAz, data_config_path)
+    modify_arguments('!diffKzT!', config.diffKzT, data_config_path)
+    modify_arguments('!viscC2smag!', config.viscC2smag, data_config_path)
+    modify_arguments('!viscAhGrid!', config.viscAhGrid, data_config_path)
+    modify_arguments('!diffKhT!', config.diffKhT, data_config_path)
 
 
 def write_size_config_files(size_config_path: str, Px: int, Py: int, Nx: int, Ny: int, Nr: int, sNx: int, sNy: int):

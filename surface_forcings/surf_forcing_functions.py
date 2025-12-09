@@ -248,7 +248,7 @@ def compute_longwave_radiation(atemp, relhum, cloud_cover, a = 1.09):
     cloud_cover = cloud_cover/100
     vaporPressure = compute_vapor_pressure(atemp, relhum)  # in units mbar
     A_L = 0.03   # Infrared radiation albedo
-    #a = 1.03 #1.09     # Calibration parameter
+    #a = 1.09     # Calibration parameter
 
     E_a = a * (1 + 0.17 * np.power(cloud_cover, 2)) * 1.24 * np.power(vaporPressure / atemp, 1./7)  # emissivity
 
