@@ -1,0 +1,13 @@
+# River inflow/outflow data
+
+ &OBCS_PARM01
+ OBCSfixTopo      = .FALSE.
+ useOBCSprescribe = .TRUE.
+
+# River inflow indices
+ !set_obs_indices!
+
+# Input data files
+ !set_obs_path!
+ &
+
