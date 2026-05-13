@@ -5,4 +5,5 @@ from .grid_functions import (get_grid,
                              MitgcmGrid,
                              get_grid_angle,
                              rotate_grid,
-                             translate_grid)
+                             translate_grid,
+                             convert_point_coord_to_mitgcm_coord)

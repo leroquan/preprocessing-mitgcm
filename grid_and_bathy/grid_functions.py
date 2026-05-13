@@ -136,6 +136,7 @@ def convert_point_coord_to_mitgcm_coord(x_point, y_point, point_epsg_projection,
     config_coord_converter = Transformer.from_crs(f"EPSG:{config.epsg_projection}", f"EPSG:{crs_target}", always_xy=True)
 
     (x0, y0) = config_coord_converter.transform(config.x0, config.y0)
+    (x0, y0) = (x0 + config.grid_resolution/2, y0 + config.grid_resolution/2)
     rot_angle_in_radian = np.deg2rad(config.rotation)
 
     point_coord_converter = Transformer.from_crs(f"EPSG:{point_epsg_projection}", f"EPSG:{crs_target}", always_xy=True)
@@ -144,4 +145,4 @@ def convert_point_coord_to_mitgcm_coord(x_point, y_point, point_epsg_projection,
     x_trans, y_trans = translate_grid(x, y, -x0, -y0)
     x_mitgcm, y_mitgcm = rotate_grid(x_trans, y_trans, 0, 0, -rot_angle_in_radian)
 
-    return x_mitgcm, y_mitgcm
+    return x_mitgcm+config.grid_resolution/2, y_mitgcm+config.grid_resolution/2
