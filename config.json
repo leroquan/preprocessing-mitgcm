@@ -12,7 +12,7 @@
     "initialization_type": "simstrat",
     "with_rivers": true
   },
-  "current_project": {
+  "current_project_neueof": {
     "simulation_name": "neuchatel_100m_EOF_synthetic",
     "lake_name": "neuchatel",
     "grid_config_name": "100m",
@@ -64,8 +64,21 @@
     "initialization_type": "idronaut",
     "with_rivers": false
   },
+  "current_project": {
+    "simulation_name": "zug",
+    "lake_name": "zug",
+    "grid_config_name": "100m",
+    "start_date": "20260101",
+    "end_date": "20260110",
+    "reference_date": "20260101",
+    "weather_model": "icon",
+    "computer_config": "kball_laken",
+    "template_folder": ["default","exch2", "obcs", "crop_results"],
+    "initialization_type": "simstrat",
+    "with_rivers": false
+  },
 
-  "available_lakes": ["geneva", "zurich", "lucerne", "neuchatel", "dummy_rectangle"],
+  "available_lakes": ["geneva", "zurich", "lucerne", "neuchatel", "zug", "dummy_rectangle"],
   "available_templates": ["default", "exch2", "obcs", "crop_results"],
   "available_compute_config": ["cscs_daint", "cscs_eiger","kball_laken"],
 
@@ -82,7 +95,8 @@
       "exf_albedo": 0.066,
       "cdrag_1": 0.0027,
       "cdrag_2": 0.000142,
-      "cdrag_3": 0.0000764
+      "cdrag_3": 0.0000764,
+      "bottomDragQuadratic": 0.0025
     },
     "geneva": {
       "exf_albedo": 0.09,
@@ -119,6 +133,18 @@
       "viscC2smag": 0.7
     },
     "neuchatel_alplakes": {
+      "secchi": [12,16,14,9,8,7,5,3,4,8,10,11],
+      "diffKhT": 2,
+      "viscAz": 1e-06,
+      "diffKzT": 1e-06,
+      "viscAhGrid": 0.00015,
+      "viscC2smag": 0.7,
+      "cdrag_1": 0.00135,
+      "cdrag_2": 7.1e-05,
+      "cdrag_3": 3.82e-05,
+      "bottomDragQuadratic": 0.001
+    },
+    "zug": {
       "secchi": [12,16,14,9,8,7,5,3,4,8,10,11],
       "diffKhT": 2,
       "viscAz": 1e-06,
@@ -275,7 +301,7 @@
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\50m",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\50m\\bathy.bin"
       }
-  },
+    },
     "dummy_rectangle": {
       "shoreline_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\dummy_rectangle\\shoreline_epsg2056.txt",
       "raw_bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\bathymetry\\dummy_rectangle\\dummy_bathy.tif",
@@ -288,7 +314,7 @@
         "y0": 1130000,
         "x1": 2605000,
         "y1": 1130000,
-        "rotation":0,
+        "rotation": 0,
         "Nx": 25,
         "Ny": 15,
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\dummy_rectangle\\200m",
@@ -332,6 +358,23 @@
         "Ny": 10,
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\neuchatel\\1000m",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\neuchatel\\1000m\\bathy.bin"
+      }
+    },
+    "zug": {
+      "shoreline_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zug\\zug_shoreline.txt",
+      "raw_bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\bathymetry\\zug\\merged_swissbathy3d.tif",
+      "no_data_raw_bathy": -9999,
+      "lake_altitude": 417,
+      "100m": {
+        "grid_resolution": 100,
+        "time_step": 15,
+        "x0": 2678200,
+        "y0": 1212300,
+        "rotation": 6.5,
+        "Nx": 50,
+        "Ny": 140,
+        "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zug\\100m",
+        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zug\\100m\\bathy.bin"
       }
     }
   },
@@ -525,6 +568,12 @@
         "1000m": {
           "Px": 6,
           "Py": 6
+        }
+      },
+      "zug": {
+        "100m": {
+          "Px": 5,
+          "Py": 7
         }
       }
     }

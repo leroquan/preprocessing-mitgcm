@@ -59,6 +59,7 @@ class ConfigObject:
         self.cdrag_1 = calibration_config.get("cdrag_1", default_parameters['cdrag_1'])
         self.cdrag_2 = calibration_config.get("cdrag_2", default_parameters['cdrag_2'])
         self.cdrag_3 = calibration_config.get("cdrag_3", default_parameters['cdrag_3'])
+        self.bottomDragQuadratic = calibration_config.get("bottomDragQuadratic", default_parameters['bottomDragQuadratic'])
 
         # Grid parameters
         grid_config = config["grid_config"][self.lake_name][self.grid_config_name]
