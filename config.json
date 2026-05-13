@@ -1,16 +1,68 @@
 {
-  "current_project": {
-    "simulation_name": "geneva_200m_2025_rivers",
-    "lake_name": "geneva",
-    "grid_config_name": "200m",
+  "current_project_luc": {
+    "simulation_name": "lucerne_100m_2025",
+    "lake_name": "lucerne",
+    "grid_config_name": "100m",
     "start_date": "20250101",
-    "end_date": "20251201",
+    "end_date": "20260101",
     "reference_date": "20250101",
     "weather_model": "icon",
     "computer_config": "kball_laken",
     "template_folder": ["default", "exch2", "obcs", "crop_results"],
-    "initialization_type": "idronaut",
+    "initialization_type": "simstrat",
     "with_rivers": true
+  },
+  "current_project": {
+    "simulation_name": "neuchatel_100m_EOF_synthetic",
+    "lake_name": "neuchatel",
+    "grid_config_name": "100m",
+    "start_date": "20260101",
+    "end_date": "20260110",
+    "reference_date": "20260101",
+    "weather_model": "icon",
+    "computer_config": "kball_laken",
+    "template_folder": ["default","exch2", "obcs", "crop_results"],
+    "initialization_type": "simstrat",
+    "with_rivers": false
+  },
+  "current_project_ge2026": {
+    "simulation_name": "geneva_100m_reanalysis_jan2026",
+    "lake_name": "geneva",
+    "grid_config_name": "100m",
+    "start_date": "20251231",
+    "end_date": "20260201",
+    "reference_date": "20250101",
+    "weather_model": "icon",
+    "computer_config": "cscs_eiger",
+    "template_folder": ["default","exch2", "obcs", "crop_results"],
+    "initialization_type": "pickup",
+    "with_rivers": true
+  },
+  "current_project_dum": {
+    "simulation_name": "dummy_rectangle",
+    "lake_name": "dummy_rectangle",
+    "grid_config_name": "200m",
+    "start_date": "20250701",
+    "end_date": "20250801",
+    "reference_date": "20250101",
+    "weather_model": "icon",
+    "computer_config": "kball_laken",
+    "template_folder": ["default", "obcs", "crop_results"],
+    "initialization_type": "idronaut",
+    "with_rivers": false
+  },
+  "current_project_dumgen": {
+    "simulation_name": "dummy_geneva",
+    "lake_name": "geneva",
+    "grid_config_name": "200m",
+    "start_date": "20250701",
+    "end_date": "20250801",
+    "reference_date": "20250701",
+    "weather_model": "icon",
+    "computer_config": "kball_laken",
+    "template_folder": ["default", "exch2", "crop_results"],
+    "initialization_type": "idronaut",
+    "with_rivers": false
   },
 
   "available_lakes": ["geneva", "zurich", "lucerne", "neuchatel", "dummy_rectangle"],
@@ -24,9 +76,9 @@
       "a_lw": 1,
       "viscAz": 1e-06,
       "diffKzT": 1.4e-07,
-      "viscC2smag": 0.3,
+      "viscC2smag": 0.7,
       "viscAhGrid": 0.00015142478199073935,
-      "diffKhT": 0.02366012218605303,
+      "diffKhT": 0.24,
       "exf_albedo": 0.066,
       "cdrag_1": 0.0027,
       "cdrag_2": 0.000142,
@@ -34,11 +86,8 @@
     },
     "geneva": {
       "exf_albedo": 0.09,
-      "diffKhT": 0.24,
       "viscAz": 1e-06,
       "diffKzT": 1e-06,
-      "viscAhgrid": 0.0125,
-      "viscC2smag": 0.7,
       "cdrag_1": 0.0018,
       "cdrag_2": 9.47e-05,
       "cdrag_3": 5.09e-05
@@ -49,11 +98,11 @@
     "lucerne": {
       "a_lw": 0.9,
       "exf_albedo": 0.1,
-      "diffKhT": 0.24,
+      "viscC2smag": 0.3,
+      "viscAhGrid": 0.00015142478199073935,
+      "diffKhT": 0.02366012218605303,
       "viscAz": 1e-05,
       "diffKzT": 1e-05,
-      "viscAhgrid": 0.0125,
-      "viscC2smag": 0.7,
       "cdrag_1": 0.00135,
       "cdrag_2": 0.000071,
       "cdrag_3": 0.0000382
@@ -64,12 +113,22 @@
     },
     "neuchatel": {
       "secchi": [12,16,14,9,8,7,5,3,4,8,10,11],
-      "albedo": 0.1,
       "diffKhT": 0.24,
       "viscAz": 1e-06,
       "diffKzT": 1e-06,
-      "viscAhgrid": 0.0125,
       "viscC2smag": 0.7
+    },
+    "neuchatel_alplakes": {
+      "secchi": [12,16,14,9,8,7,5,3,4,8,10,11],
+      "diffKhT": 2,
+      "viscAz": 1e-06,
+      "diffKzT": 1e-06,
+      "viscAhGrid": 0.00015,
+      "viscC2smag": 0.7,
+      "cdrag_1": 0.00135,
+      "cdrag_2": 7.1e-05,
+      "cdrag_3": 3.82e-05,
+      "bottomDragQuadratic": 0.001
     }
   },
 
@@ -139,15 +198,14 @@
       },
       "100m": {
         "grid_resolution": 100,
-        "time_step": 4,
+        "time_step": 10,
         "x0": 2500000,
         "y0": 1116500,
-        "x1": 2563000,
-        "y1": 1138700,
-        "Nx": 672,
-        "Ny": 264,
+        "rotation": 19.411486858683578,
+        "Nx": 660,
+        "Ny": 245,
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\100m",
-        "bathy_path": "C:\\Users\\leroquan\\Documents\\00-Work_space\\06-mit_gcm_geneva\\Instructions Fazel\\binary_data\\template_bathymetry\\bathyGeneva_100m.bin"
+        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\100m\\bathy.bin"
       },
       "50m": {
         "grid_resolution": 50,
@@ -252,6 +310,28 @@
         "Ny": 48,
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\neuchatel\\200m",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\neuchatel\\200m\\bathy.bin"
+      },
+      "100m": {
+        "grid_resolution": 100,
+        "time_step": 7,
+        "x0": 2542100,
+        "y0": 1178000,
+        "rotation": 40,
+        "Nx": 390,
+        "Ny": 96,
+        "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\neuchatel\\100m",
+        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\neuchatel\\100m\\bathy.bin"
+      },
+      "1000m": {
+        "grid_resolution": 1000,
+        "time_step": 7,
+        "x0": 2542100,
+        "y0": 1178000,
+        "rotation": 40,
+        "Nx": 39,
+        "Ny": 10,
+        "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\neuchatel\\1000m",
+        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\neuchatel\\1000m\\bathy.bin"
       }
     }
   },
@@ -262,8 +342,11 @@
         "bafu_id": 2009,
         "discharge_variable_name": "AbflussPneumatikunten",
         "temperature_variable_name": "Wassertemperatur1",
-        "coordinates_lake_point": [2555400, 1138400],
-        "angle_from_north_direction": 330,
+        "coordinates_lake_point": {
+          "50m": [2555445, 1138281],
+          "100m": [2555507, 1138205]
+        },
+        "direction": "south",
         "in_or_out": "in",
         "river_depth": 1.5
       },
@@ -271,10 +354,39 @@
         "bafu_id": 2606,
         "discharge_variable_name": "AbflussRisoniclinksvorRollout",
         "temperature_variable_name": "Wassertemperaturlinks",
-        "coordinates_lake_point": [2500450, 1118000],
-        "angle_from_north_direction": 255,
+        "coordinates_lake_point": {
+          "50m": [2500511, 1118023],
+          "100m": [2501126, 1118311]
+        },
+        "direction": "west",
         "in_or_out": "out",
         "river_depth": 1.5
+      }
+    },
+    "lucerne": {
+      "reuss-seedorf": {
+        "bafu_id": 2056,
+        "discharge_variable_name": "AbflussPneumatik",
+        "temperature_variable_name": "Wassertemperatur",
+        "coordinates_lake_point": {
+          "50m": [2689425, 1194838],
+          "100m": [2689485, 1194802]
+        },
+        "direction": "south",
+        "in_or_out": "in",
+        "river_depth": 3
+      },
+      "reuss-luzern": {
+        "bafu_id": 2152,
+        "discharge_variable_name": "AbflussPneumatik",
+        "temperature_variable_name": "Wassertemperatur",
+        "coordinates_lake_point": {
+          "50m": [2666115, 1211534],
+          "100m": [2666133, 1211506]
+        },
+        "direction": "south",
+        "in_or_out": "out",
+        "river_depth": 3
       }
     },
     "dummy_rectangle": {
@@ -282,8 +394,8 @@
         "bafu_id": 2009,
         "discharge_variable_name": "AbflussPneumatikunten",
         "temperature_variable_name": "Wassertemperatur1",
-        "coordinates_lake_point": [2600500, 1130500],
-        "angle_from_north_direction": 45,
+        "coordinates_lake_point": {"200m": [2600500, 1130500]},
+        "direction": "south",
         "in_or_out": "in",
         "river_depth": 3
       }
@@ -320,15 +432,15 @@
   "computer_config": {
     "cscs_daint": {
       "endian_type": "big_endian",
-      "results_folder": "..\\run",
+      "results_folder": "..",
       "geneva": {
         "50m": {
           "Px": 56,
           "Py": 24
         },
         "100m": {
-          "Px": 48,
-          "Py": 12
+          "Px": 66,
+          "Py": 35
         },
         "200m": {
           "Px": 48,
@@ -346,11 +458,15 @@
     },
     "cscs_eiger": {
       "endian_type": "big_endian",
-      "results_folder": "..\\run",
+      "results_folder": "..",
       "geneva": {
         "50m": {
-          "Px": 48,
-          "Py": 24
+          "Px": 64,
+          "Py": 48
+        },
+        "100m": {
+          "Px": 66,
+          "Py": 35
         },
         "200m": {
           "Px": 32,
@@ -366,9 +482,9 @@
           "Px": 8,
           "Py": 6
         },
-        "200m_no_rotation": {
-          "Px": 12,
-          "Py": 3
+        "100m": {
+          "Px": 3,
+          "Py": 5
         },
         "1000m": {
           "Px": 10,
@@ -387,8 +503,8 @@
           "Py": 6
         },
         "50m": {
-          "Px": 12,
-          "Py": 10
+          "Px": 8,
+          "Py": 6
         }
       },
       "dummy_rectangle": {
@@ -400,6 +516,14 @@
       "neuchatel": {
         "200m": {
           "Px": 5,
+          "Py": 6
+        },
+        "100m": {
+          "Px": 6,
+          "Py": 6
+        },
+        "1000m": {
+          "Px": 6,
           "Py": 6
         }
       }

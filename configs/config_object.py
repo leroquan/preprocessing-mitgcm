@@ -11,13 +11,13 @@ class Paths:
         self.raw_weather_folder = os.path.join(weather_model_config['raw_results_from_api_folder'], lake_name)
 
 class River:
-    def __init__(self, name, river_config):
+    def __init__(self, name, river_config, grid_config_name):
         self.name = name,
         self.bafu_id = river_config['bafu_id']
         self.discharge_variable_name = river_config['discharge_variable_name']
         self.temperature_variable_name = river_config['temperature_variable_name']
-        self.coordinates_lake_point = river_config['coordinates_lake_point'],
-        self.angle_from_north_direction = river_config['angle_from_north_direction'],
+        self.coordinates_lake_point = river_config['coordinates_lake_point'][grid_config_name]
+        self.direction = river_config['direction']
         self.in_or_out = river_config['in_or_out']
         self.river_depth = river_config['river_depth']
 
@@ -50,12 +50,12 @@ class ConfigObject:
         default_parameters = config["calibration"]['default']
         self.secchi = calibration_config.get("secchi", default_parameters['secchi'])
         self.a_lw = calibration_config.get("a_lw", default_parameters['a_lw'])
+        self.exf_albedo = calibration_config.get("exf_albedo", default_parameters['exf_albedo'])
         self.viscC2smag = calibration_config.get("viscC2smag", default_parameters['viscC2smag'])
-        self.viscAz = calibration_config.get("viscAz", default_parameters['viscAz'])
-        self.diffKzT = calibration_config.get("diffKzT", default_parameters['diffKzT'])
         self.viscAhGrid = calibration_config.get("viscAhGrid", default_parameters['viscAhGrid'])
         self.diffKhT = calibration_config.get("diffKhT", default_parameters['diffKhT'])
-        self.exf_albedo = calibration_config.get("exf_albedo", default_parameters['exf_albedo'])
+        self.viscAz = calibration_config.get("viscAz", default_parameters['viscAz'])
+        self.diffKzT = calibration_config.get("diffKzT", default_parameters['diffKzT'])
         self.cdrag_1 = calibration_config.get("cdrag_1", default_parameters['cdrag_1'])
         self.cdrag_2 = calibration_config.get("cdrag_2", default_parameters['cdrag_2'])
         self.cdrag_3 = calibration_config.get("cdrag_3", default_parameters['cdrag_3'])
@@ -71,11 +71,12 @@ class ConfigObject:
         self.Ny = grid_config["Ny"]
 
         # Rivers config
-        river_config = config["river_config"].get(self.lake_name, {})
-        river_objects = []
-        for arg, value in river_config.items():
-            river_objects.append(River(arg, value))
-        self.rivers = river_objects
+        if self.with_rivers == True:
+            river_config = config["river_config"].get(self.lake_name, {})
+            river_objects = []
+            for arg, value in river_config.items():
+                river_objects.append(River(arg, value, self.grid_config_name))
+            self.rivers = river_objects
 
         # Computer parameters
         computer_config = config["computer_config"][self.computer_config]

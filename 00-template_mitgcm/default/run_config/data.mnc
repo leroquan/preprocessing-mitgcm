@@ -9,7 +9,7 @@
  pickup_read_mnc  = .FALSE.
  readgrid_mnc     = .TRUE.
  mnc_use_outdir	  = .TRUE.
- mnc_outdir_str = '!results_folder!'
+ mnc_outdir_str = '!results_folder!/run'
  writegrid_mnc    = .FALSE.
  &
 

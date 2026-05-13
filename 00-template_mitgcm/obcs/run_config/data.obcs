@@ -8,6 +8,6 @@
  !set_obs_indices!
 
 # Input data files
- !set_obs_path!
+!set_obs_path!
  &
 

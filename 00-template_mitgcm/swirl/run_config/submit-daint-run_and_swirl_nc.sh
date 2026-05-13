@@ -41,8 +41,8 @@ do
 		python $MITGCM_ROOTDIR/utils/python/MITgcmutils/scripts/gluemncbig -o "../output/grid/merged_grid.nc" "../run/grid*.nc" --many
 	fi
 
-	# Run your Dask-based Python postprocessing
-	python ../postprocessing/main.py || { echo "main.py failed at loop $i"; exit 1; }
+	# Run your Dask-based Python crop_results
+	python ../crop_results/main.py || { echo "main.py failed at loop $i"; exit 1; }
 
 	echo "=== Loop $i: Cleaning up at $(date '+%Y-%m-%d %H:%M:%S') ==="
 

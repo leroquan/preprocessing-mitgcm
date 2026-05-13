@@ -56,7 +56,7 @@ def get_str_current_time():
     return datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 
 
-def main(config_path = '..//postprocessing//config_postprocessing.json'):
+def main(config_path = '..//crop_results//config_postprocessing.json'):
     with open(config_path, 'r') as file:
         pp_config = json.load(file)
 

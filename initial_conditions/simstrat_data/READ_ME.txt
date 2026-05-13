@@ -8,4 +8,4 @@ One Dimensional Simulations Depth Time
 lake = geneva / lowerzurich / lucernegersauerandtreibbecken
 
 
-https://alplakes-api.eawag.ch/simulations/1d/depthtime/simstrat/lucernegersauerandtreibbecken/202505010000/202505020000
+https://alplakes-api.eawag.ch/simulations/1d/depthtime/simstrat/geneva/202010010000/202010020000

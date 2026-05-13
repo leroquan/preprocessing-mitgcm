@@ -32,7 +32,7 @@ C      default assume a large Max_Nb_BlankTiles equal to Nb of active tiles
 C      resulting in doubling the tile number.
 	  PARAMETER ( W2_maxNbFacets = 10 )
 	  PARAMETER ( W2_maxNeighbours = 8 )
-	  PARAMETER ( W2_maxNbTiles =  nSx*nSy*nPx*nPy * 2 )
+	  PARAMETER ( W2_maxNbTiles =  nSx*nSy*nPx*nPy * 3 )
 	  PARAMETER ( W2_ioBufferSize = W2_maxNbTiles*sNx*sNy )
 	  PARAMETER ( W2_maxXStackNx = W2_maxNbTiles*sNx )
 	  PARAMETER ( W2_maxXStackNy = W2_maxNbTiles*sNy )
