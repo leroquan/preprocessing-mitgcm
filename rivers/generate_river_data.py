@@ -128,21 +128,13 @@ def get_formatted_velocities(config, river_point_config, date_list, z_grid, idx_
     discharge_data = parse_river_json(json_discharge)
 
     formatted_discharge = discharge_data.interp(time=date_list, method='linear')
-
-    river_angle = river_point_config.angle_from_north_direction[0] + config.rotation
-    u_flow = formatted_discharge.data.values * np.sin(np.deg2rad(river_angle))
-    v_flow = formatted_discharge.data.values * np.cos(np.deg2rad(river_angle))
-
-
     depth_profile = np.insert(z_grid[0:(idx_max_z_river+1)], 0, 0)
 
-    uvel_profile = []
-    vvel_profile = []
+    vel_profile = []
     for i_time, date in enumerate(date_list):
-        uvel_profile.append(vectorFlow(u_flow[i_time], depth_profile) / config.grid_resolution)
-        vvel_profile.append(vectorFlow(v_flow[i_time], depth_profile) / config.grid_resolution)
+        vel_profile.append(vectorFlow(formatted_discharge.isel(time = i_time).data.values, depth_profile) / config.grid_resolution)
 
-    return uvel_profile, vvel_profile
+    return vel_profile
 
 
 def get_formatted_temperature(config, river_point_config, date_list):
@@ -161,52 +153,50 @@ def get_formatted_temperature(config, river_point_config, date_list):
     return formatted_temperature.data.values
 
 
-def get_boundary_directions(river_point_config, u_mean, v_mean):
-    boundary_directions = []
-    if river_point_config.in_or_out == 'in':
-        if u_mean < 0:
-            boundary_directions.append('east')
-        elif u_mean > 0:
-            boundary_directions.append('west')
-        if v_mean < 0:
-            boundary_directions.append('north')
-        elif v_mean > 0:
-            boundary_directions.append('south')
-    elif river_point_config.in_or_out == 'out':
-        if u_mean < 0:
-            boundary_directions.append('west')
-        elif u_mean > 0:
-            boundary_directions.append('east')
-        if v_mean < 0:
-            boundary_directions.append('south')
-        elif v_mean > 0:
-            boundary_directions.append('north')
-    else:
-        raise ValueError('river_point_config.in_or_out must be "in" or "out"')
+def get_boundary_direction_factor(river_point_config):
+    if not (river_point_config.direction in ['north', 'south', 'east', 'west']
+            and river_point_config.in_or_out in ['in', 'out']) :
+        raise ValueError(
+            f"River direction should be 'north', 'south', 'east' or 'west' (entered {river_point_config.direction}). \n"
+            f"In_or_out should be 'in' or 'out' (entered {river_point_config.in_or_out})."
+        )
 
-    return boundary_directions
+    factor = 1
+    if river_point_config.direction == 'south' and river_point_config.in_or_out == 'out' :
+        factor = -1
+    if river_point_config.direction == 'north' and river_point_config.in_or_out == 'in' :
+        factor = -1
+    if river_point_config.direction == 'west' and river_point_config.in_or_out == 'out' :
+        factor = -1
+    if river_point_config.direction == 'east' and river_point_config.in_or_out == 'in' :
+        factor = -1
+
+    return factor
 
 
 def build_river_dict(river_dicts, config, river_point_config, z_grid, date_list):
-    coord_point = river_point_config.coordinates_lake_point[0]
+    coord_point = river_point_config.coordinates_lake_point
     x_coord, y_coord = convert_point_coord_to_mitgcm_coord(coord_point[0], coord_point[1], "2056", config)
-    x_idx = int(x_coord / config.grid_resolution)+1
-    y_idx = int(y_coord / config.grid_resolution)+1
+    x_idx = int(x_coord / config.grid_resolution)
+    y_idx = int(y_coord / config.grid_resolution)
 
     idx_max_z_river = np.abs(z_grid - river_point_config.river_depth).argmin()
 
-    uvel, vvel = get_formatted_velocities(config, river_point_config, date_list, z_grid, idx_max_z_river)
-    temp = get_formatted_temperature(config, river_point_config, date_list)
+    vel = get_formatted_velocities(config, river_point_config, date_list, z_grid, idx_max_z_river)
+    direction_factor = get_boundary_direction_factor(river_point_config)
+    temperature = None
+    if river_point_config.in_or_out == 'in':
+        temperature = get_formatted_temperature(config, river_point_config, date_list)
 
     river_dicts.append({
         "name": river_point_config.name,
         "x_idx": x_idx,
         "y_idx": y_idx,
         "max_z_idx": idx_max_z_river,
-        "boundary_directions": get_boundary_directions(river_point_config, np.mean(uvel), np.mean(vvel)),
-        "u_velocity": uvel,
-        "v_velocity": vvel,
-        "temperature": temp
+        "boundary_direction": river_point_config.direction,
+        "in_or_out": river_point_config.in_or_out,
+        "velocity": direction_factor * np.array(vel),
+        "temperature": temperature
     })
 
     return river_dicts
@@ -218,46 +208,53 @@ def define_direction_specific_variables(boundary_direction, config):
     idx_var = ''
     prefix = ''
     idx_ortho=''
+    prefix_ortho=''
     if boundary_direction == 'north' or boundary_direction == 'south':
         boundary_length = config.Nx
         vel_var = 'v'
         idx_var = 'x_idx'
         prefix = 'J'
+        prefix_ortho='I'
         idx_ortho = 'y_idx'
     elif boundary_direction == 'east' or boundary_direction == 'west':
         boundary_length = config.Ny
         vel_var = 'u'
         idx_var = 'y_idx'
         prefix = 'I'
+        prefix_ortho='J'
         idx_ortho = 'x_idx'
 
-    return boundary_length, vel_var, idx_var, prefix, idx_ortho
+    return boundary_length, vel_var, idx_var, prefix, prefix_ortho, idx_ortho
 
 
-def write_river_binaries(binary_data_folder, boundary_direction, vel_var,
+def write_discharge_binaries(binary_data_folder, boundary_direction, vel_var,
                          date_list, dz_grid, boundary_length, river_dicts, idx_var):
     vel_file = open(f'{binary_data_folder}/bc_{boundary_direction}_{vel_var}.bin', 'ab')
-    temperature_file = open(f'{binary_data_folder}/bc_{boundary_direction}_temp.bin', 'ab')
-
     for i_time, date in enumerate(date_list):
-        velocities_bc = np.zeros((len(dz_grid), boundary_length))
-        temperatures_bc = np.zeros((len(dz_grid), boundary_length))
+        velocities_bc = np.zeros((len(dz_grid), boundary_length), dtype='>f8')
         for dict in river_dicts:
-            if boundary_direction in dict["boundary_directions"]:
-                vel = dict[f"{vel_var}_velocity"][i_time]
-                temp = dict['temperature'][i_time]
-
+            if boundary_direction == dict["boundary_direction"]:
+                vel = np.asarray(dict['velocity'][i_time], dtype='>f8')
                 velocities_bc[0:(dict["max_z_idx"]+1), dict[idx_var]] = vel
-                temperatures_bc[0:(dict["max_z_idx"]+1), dict[idx_var]] = temp
 
         velocities_bc.tofile(vel_file)
-        temperatures_bc.tofile(temperature_file)
-
     vel_file.close()
+
+
+def write_temperature_binaries(binary_data_folder, boundary_direction,
+                         date_list, dz_grid, boundary_length, river_dicts, idx_var):
+    temperature_file = open(f'{binary_data_folder}/bc_{boundary_direction}_temp.bin', 'ab')
+    for i_time, date in enumerate(date_list):
+        temperatures_bc = np.zeros((len(dz_grid), boundary_length), dtype='>f8')
+        for dict in river_dicts:
+            if boundary_direction == dict["boundary_direction"] and dict['temperature'] is not None:
+                temp = np.asarray(dict['temperature'][i_time], dtype='>f8')
+                temperatures_bc[0:(dict["max_z_idx"]+1), dict[idx_var]] = temp
+        temperatures_bc.tofile(temperature_file)
     temperature_file.close()
 
 
-def build_river_files(config: ConfigObject, output_folder: str):
+def build_river_files(config: ConfigObject, output_folder: str, save_files=True):
     binary_data_folder = os.path.join(output_folder, 'binary_data')
     obcs_file_path = os.path.join(output_folder, 'run_config', 'data.obcs')
     date_list = pd.date_range(config.start_date, config.end_date, freq="1h")
@@ -273,21 +270,29 @@ def build_river_files(config: ConfigObject, output_folder: str):
     obs_path_string = ''
     for boundary_direction in ['north', 'south', 'east', 'west']:
         (boundary_length, vel_var,
-         idx_var, prefix, idx_ortho) = define_direction_specific_variables(boundary_direction, config)
+         idx_var, prefix, prefix_ortho, idx_ortho) = define_direction_specific_variables(boundary_direction, config)
 
         discharge_exist=False
+        temperature_exist=False
         for dict in river_dicts:
-            if boundary_direction in dict["boundary_directions"]:
+            if boundary_direction == dict["boundary_direction"]:
                 discharge_exist=True
-                obs_indices_string += f' OB_{prefix}{boundary_direction}({dict[idx_var]}) = {dict[idx_ortho]}\n'
+                obs_indices_string += f' OB_{prefix}{boundary_direction}({dict[idx_var]+1}) = {dict[idx_ortho]+1}\n'
+                #obs_indices_string += f' OB_{prefix_ortho}{dict["blocked_direction"]}({dict[idx_ortho]+1}) = {dict[idx_var]+1}\n'
                 obs_path_string += f"OB{str.capitalize(boundary_direction[0])}{vel_var}File = '../binary_data/bc_{boundary_direction}_{vel_var}.bin'\n"
-                obs_path_string += f"OB{str.capitalize(boundary_direction[0])}TFile = '../binary_data/bc_{boundary_direction}_T.bin'\n"
+                if dict['temperature'] is not None:
+                    temperature_exist=True
+                    obs_path_string += f"OB{str.capitalize(boundary_direction[0])}TFile = '../binary_data/bc_{boundary_direction}_temp.bin'\n"
 
-        if discharge_exist:
-            write_river_binaries(binary_data_folder, boundary_direction, vel_var,
+        if discharge_exist and save_files:
+            write_discharge_binaries(binary_data_folder, boundary_direction, vel_var,
+                         date_list, dz_grid, boundary_length, river_dicts, idx_var)
+        if temperature_exist and save_files:
+            write_temperature_binaries(binary_data_folder, boundary_direction,
                          date_list, dz_grid, boundary_length, river_dicts, idx_var)
 
-    modify_arguments('!set_obs_indices!', obs_indices_string[:-1], obcs_file_path)
-    modify_arguments('!set_obs_path!', obs_path_string[:-1], obcs_file_path)
+    if save_files:
+        modify_arguments('!set_obs_indices!', obs_indices_string[:-1], obcs_file_path)
+        modify_arguments('!set_obs_path!', obs_path_string[:-1], obcs_file_path)
 
     return river_dicts, obs_indices_string
