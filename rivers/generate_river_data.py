@@ -38,7 +38,6 @@ def build_river_config(config: ConfigObject, output_dir: str, save_files=True):
 
     obs_indices_string = ''
     obs_path_string = ''
-    balance = {'north': 0, 'south': 0, 'east': 0, 'west':0}
     for boundary_direction in ['north', 'south', 'east', 'west']:
         for dict in river_dicts:
             if boundary_direction == dict["boundary_direction"]:
@@ -57,21 +56,11 @@ def build_river_config(config: ConfigObject, output_dir: str, save_files=True):
 
                 if dict["in_or_out"] == 'in':
                     obs_path_string += f"OB{str.capitalize(boundary_direction[0])}TFile = '../binary_data/bc_{boundary_direction}_temp.bin'\n"
-                elif dict["in_or_out"] == 'out':
-                    balance[boundary_direction] = 1
 
     if save_files:
         obcs_path = os.path.join(output_dir, 'data.obcs')
-
-        template_obcs_file_path = os.path.join(f'../00-template_mitgcm/obcs/run_config/data.obcs')
-        shutil.copy(template_obcs_file_path, obcs_path)
-
         modify_arguments('!set_obs_indices!', obs_indices_string[:-1], obcs_path)
         modify_arguments('!set_obs_path!', obs_path_string[:-1], obcs_path)
-        modify_arguments('!balanceFacN!', balance['north'], obcs_path)
-        modify_arguments('!balanceFacS!', balance['south'], obcs_path)
-        modify_arguments('!balanceFacE!', balance['east'], obcs_path)
-        modify_arguments('!balanceFacW!', balance['west'], obcs_path)
 
         river_dicts_path = os.path.join(output_dir, "river_dicts.json")
         with open(river_dicts_path, "w") as f:
