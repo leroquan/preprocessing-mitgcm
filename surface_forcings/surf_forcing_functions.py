@@ -311,8 +311,15 @@ def extract_and_save_surface_forcings(output_folder_path: str, start_date: str, 
 
         return data
 
-    process_variable('U', 'u10')
-    process_variable('V', 'v10')
+    u10 = process_variable('U', 'u10')
+    v10 = process_variable('V', 'v10')
+    
+    angle = -90
+    u10 = u10* np.cos(np.deg2rad(angle)) - v10 * np.sin(np.deg2rad(angle))
+    v10 = u10 * np.sin(np.deg2rad(angle)) + v10 * np.cos(np.deg2rad(angle))
+    write_binary(os.path.join(output_folder_path, f'u10.bin'), u10)
+    write_binary(os.path.join(output_folder_path, f'v10.bin'), v10)
+
     swdown = process_variable('GLOB', 'swdown')
 
     atemp = process_variable('T_2M', 'atemp')
