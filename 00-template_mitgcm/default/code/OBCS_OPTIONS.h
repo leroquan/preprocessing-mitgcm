@@ -10,7 +10,7 @@ C https://mitgcm.readthedocs.io/en/latest/phys_pkgs/obcs.html
 #ifdef ALLOW_OBCS
 
 C Enable individual open boundaries
-#undef ALLOW_OBCS_NORTH
+#define ALLOW_OBCS_NORTH
 #define ALLOW_OBCS_EAST
 #define ALLOW_OBCS_SOUTH
 #define ALLOW_OBCS_WEST
@@ -18,6 +18,7 @@ C Enable individual open boundaries
 C Enable OB values to be prescribed via external fields that are read
 C from a file
 #define ALLOW_OBCS_PRESCRIBE
+#define ALLOW_OBCS_BALANCE
 
 #endif /* ALLOW_OBCS */
 #endif /* OBCS_OPTIONS_H */

@@ -12,7 +12,7 @@ class Paths:
 
 class River:
     def __init__(self, name, river_config, grid_config_name):
-        self.name = name,
+        self.name = name
         self.bafu_id = river_config['bafu_id']
         self.discharge_variable_name = river_config['discharge_variable_name']
         self.temperature_variable_name = river_config['temperature_variable_name']

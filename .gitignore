@@ -7,3 +7,11 @@
 
 /initial_conditions/simstrat_data/
 /rivers/bafu_data/*
+configs/__pycache__/*
+grid_and_bathy/__pycache__/*
+initial_conditions/__pycache__/*
+rivers/__pycache__/*
+run_preprocessing/__pycache__/*
+utils/__pycache__/*
+surface_forcings/__pycache__/*
+.idea/deployment.xml

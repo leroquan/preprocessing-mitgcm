@@ -3,7 +3,7 @@
 # Script to run the synthetic events in one go
 export $(cat my_env.txt | xargs)
 
-OUTPUT_DIR="/storage/alplakes_test/neuchatel_100m_EOF_synthetic"
+OUTPUT_DIR="../outputs"
 
 # Correct Bash array syntax
 DATES=(
@@ -43,7 +43,7 @@ do
     sed -i "s|fileName.*=.*|fileName(1) = '${OUTPUT_DIR}/outputs_${date}/3Dsnaps',|" data.diagnostics
     
     echo "=== Loop ${date}: Starting MITgcm at $(date '+%Y-%m-%d %H:%M:%S') ==="
-    mpirun -np 27 mitgcmuv || {
+    srun --ntasks=929 mitgcmuv || {
         echo "MITgcm failed at loop $i"
         exit 1
     }

@@ -5,7 +5,7 @@ https://www.alplakes.eawag.ch/api
 /simulations/1d/depthtime/{model}/{lake}/{start_time}/{end_time}
 One Dimensional Simulations Depth Time
 
-lake = geneva / lowerzurich / lucernegersauerandtreibbecken
+lake = geneva / lowerzurich / lucernegersauerandtreibbecken / zug
 
 
-https://alplakes-api.eawag.ch/simulations/1d/depthtime/simstrat/geneva/202010010000/202010020000
+https://alplakes-api.eawag.ch/simulations/1d/depthtime/simstrat/zug/202010010000/202605020000

@@ -1,85 +1,59 @@
 {
   "current_project_luc": {
-    "simulation_name": "lucerne_100m_2025",
+    "simulation_name": "lucerne_test_100m_2025",
     "lake_name": "lucerne",
-    "grid_config_name": "100m",
+    "grid_config_name": "200m",
     "start_date": "20250101",
-    "end_date": "20260101",
+    "end_date": "20260301",
     "reference_date": "20250101",
     "weather_model": "icon",
     "computer_config": "kball_laken",
     "template_folder": ["default", "exch2", "obcs", "crop_results"],
     "initialization_type": "simstrat",
-    "with_rivers": true
-  },
-  "current_project_neueof": {
-    "simulation_name": "neuchatel_100m_EOF_synthetic",
-    "lake_name": "neuchatel",
-    "grid_config_name": "100m",
-    "start_date": "20260101",
-    "end_date": "20260110",
-    "reference_date": "20260101",
-    "weather_model": "icon",
-    "computer_config": "kball_laken",
-    "template_folder": ["default","exch2", "obcs", "crop_results"],
-    "initialization_type": "simstrat",
     "with_rivers": false
   },
-  "current_project_ge2026": {
-    "simulation_name": "geneva_100m_reanalysis_jan2026",
-    "lake_name": "geneva",
-    "grid_config_name": "100m",
+  "current_project_neuch": {
+    "simulation_name": "neuchatel_100m_2025",
+    "lake_name": "neuchatel",
+    "grid_config_name": "200m",
     "start_date": "20251231",
-    "end_date": "20260201",
+    "end_date": "20260301",
     "reference_date": "20250101",
     "weather_model": "icon",
-    "computer_config": "cscs_eiger",
+    "computer_config": "kball_laken",
     "template_folder": ["default","exch2", "obcs", "crop_results"],
     "initialization_type": "pickup",
-    "with_rivers": true
-  },
-  "current_project_dum": {
-    "simulation_name": "dummy_rectangle",
-    "lake_name": "dummy_rectangle",
-    "grid_config_name": "200m",
-    "start_date": "20250701",
-    "end_date": "20250801",
-    "reference_date": "20250101",
-    "weather_model": "icon",
-    "computer_config": "kball_laken",
-    "template_folder": ["default", "obcs", "crop_results"],
-    "initialization_type": "idronaut",
-    "with_rivers": false
-  },
-  "current_project_dumgen": {
-    "simulation_name": "dummy_geneva",
-    "lake_name": "geneva",
-    "grid_config_name": "200m",
-    "start_date": "20250701",
-    "end_date": "20250801",
-    "reference_date": "20250701",
-    "weather_model": "icon",
-    "computer_config": "kball_laken",
-    "template_folder": ["default", "exch2", "crop_results"],
-    "initialization_type": "idronaut",
     "with_rivers": false
   },
   "current_project": {
-    "simulation_name": "zug",
+    "simulation_name": "geneva_100m_2025",
+    "lake_name": "geneva",
+    "grid_config_name": "100m",
+    "start_date": "20250301",
+    "end_date": "20260301",
+    "reference_date": "20250301",
+    "weather_model": "icon",
+    "computer_config": "cscs_eiger",
+    "template_folder": ["default","exch2", "crop_results"],
+    "initialization_type": "pickup",
+    "with_rivers": false
+  },
+  "current_project_zug": {
+    "simulation_name": "zug_100m_salt",
     "lake_name": "zug",
     "grid_config_name": "100m",
-    "start_date": "20260101",
-    "end_date": "20260110",
-    "reference_date": "20260101",
+    "start_date": "20250101",
+    "end_date": "20260301",
+    "reference_date": "20250101",
     "weather_model": "icon",
     "computer_config": "kball_laken",
-    "template_folder": ["default","exch2", "obcs", "crop_results"],
+    "template_folder": ["default", "exch2", "obcs", "crop_results"],
     "initialization_type": "simstrat",
     "with_rivers": false
   },
 
   "available_lakes": ["geneva", "zurich", "lucerne", "neuchatel", "zug", "dummy_rectangle"],
-  "available_templates": ["default", "exch2", "obcs", "crop_results"],
+  "available_templates": ["default", "exch2", "obcs", "crop_results", "zug", "EOF_synthetic"],
   "available_compute_config": ["cscs_daint", "cscs_eiger","kball_laken"],
 
 
@@ -127,10 +101,15 @@
     },
     "neuchatel": {
       "secchi": [12,16,14,9,8,7,5,3,4,8,10,11],
-      "diffKhT": 0.24,
+      "diffKhT": 0.5,
       "viscAz": 1e-06,
       "diffKzT": 1e-06,
-      "viscC2smag": 0.7
+      "viscC2smag": 0.7,
+      "viscAhGrid": 0.00015,
+      "cdrag_1": 0.00135,
+      "cdrag_2": 7.1e-05,
+      "cdrag_3": 3.82e-05,
+      "bottomDragQuadratic": 0.001
     },
     "neuchatel_alplakes": {
       "secchi": [12,16,14,9,8,7,5,3,4,8,10,11],
@@ -145,16 +124,13 @@
       "bottomDragQuadratic": 0.001
     },
     "zug": {
-      "secchi": [12,16,14,9,8,7,5,3,4,8,10,11],
-      "diffKhT": 2,
+      "secchi": [7.2,8.1,5.6,3.0,7.5,6.1,3.9,3.1,4.1,4.5,5.0,5.5],
+      "diffKhT": 0.24,
       "viscAz": 1e-06,
-      "diffKzT": 1e-06,
-      "viscAhGrid": 0.00015,
+      "diffKzT": 1.4e-07,
+      "viscAhGrid": 0.0125,
       "viscC2smag": 0.7,
-      "cdrag_1": 0.00135,
-      "cdrag_2": 7.1e-05,
-      "cdrag_3": 3.82e-05,
-      "bottomDragQuadratic": 0.001
+      "bottomDragQuadratic": 0.0025
     }
   },
 
@@ -169,8 +145,7 @@
         "time_step": 64,
         "x0": 2500000,
         "y0": 1116500,
-        "x1": 2563000,
-        "y1": 1138700,
+        "rotation": 19.411486858683578,
         "Nx": 70,
         "Ny": 25,
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\1000m",
@@ -179,12 +154,11 @@
       "400m": {
         "grid_resolution": 400,
         "time_step": 32,
-        "x0": 2500000,
-        "y0": 1116500,
-        "x1": 2563000,
-        "y1": 1138700,
-        "Nx": 180,
-        "Ny": 80,
+        "x0": 2499942,
+        "y0": 1116542,
+        "rotation": 19.411486858683578,
+        "Nx": 165,
+        "Ny": 61,
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\400m",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\400m\\bathy_geneva_400m.bin"
       },
@@ -206,7 +180,7 @@
         "y0": 1116500,
         "rotation": 0,
         "Nx": 336,
-        "Ny": 180,
+        "Ny": 132,
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\200m_no_rotation",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\geneva\\200m_no_rotation\\bathy.bin"
       },
@@ -300,6 +274,28 @@
         "Ny": 360,
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\50m",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\50m\\bathy.bin"
+      },
+      "100m_test": {
+        "grid_resolution": 100,
+        "time_step": 25,
+        "x0": 2674000,
+        "y0": 1201700,
+        "rotation": 0,
+        "Nx": 120,
+        "Ny": 44,
+        "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\100m_test",
+        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\100m_test\\bathy.bin"
+      },
+      "200m": {
+        "grid_resolution": 200,
+        "time_step": 25,
+        "x0": 2662600,
+        "y0": 1200600,
+        "rotation": -16.26020470831196,
+        "Nx": 144,
+        "Ny": 90,
+        "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\200m",
+        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\lucerne\\200m\\bathy.bin"
       }
     },
     "dummy_rectangle": {
@@ -329,13 +325,24 @@
       "200m": {
         "grid_resolution": 200,
         "time_step": 15,
-        "x0": 2542100,
-        "y0": 1178000,
+        "x0": 2542056.16,
+        "y0": 1178020.44,
         "rotation": 40,
         "Nx": 195,
         "Ny": 48,
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\neuchatel\\200m",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\neuchatel\\200m\\bathy.bin"
+      },
+      "400m": {
+        "grid_resolution": 400,
+        "time_step": 15,
+        "x0": 2542100,
+        "y0": 1178000,
+        "rotation": 40,
+        "Nx": 100,
+        "Ny": 25,
+        "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\neuchatel\\400m",
+        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\neuchatel\\400m\\bathy.bin"
       },
       "100m": {
         "grid_resolution": 100,
@@ -375,6 +382,17 @@
         "Ny": 140,
         "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zug\\100m",
         "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zug\\100m\\bathy.bin"
+      },
+      "100m_lucerne_test": {
+        "grid_resolution": 100,
+        "time_step": 25,
+        "x0": 2682800,
+        "y0": 1212300,
+        "rotation": 90,
+        "Nx": 120,
+        "Ny": 44,
+        "grid_folder_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zug\\100m_lucerne_test",
+        "bathy_path": "C:\\Users\\leroquan\\Documents\\Data\\mitgcm_grids\\zug\\100m_lucerne_test\\bathy.bin"
       }
     }
   },
@@ -514,6 +532,14 @@
         "200m": {
           "Px": 32,
           "Py": 16
+        },
+        "400m": {
+          "Px": 36,
+          "Py": 16
+        },
+        "1000m": {
+          "Px": 36,
+          "Py": 16
         }
       }
     },
@@ -548,6 +574,14 @@
         "50m": {
           "Px": 8,
           "Py": 6
+        },
+        "100m_test": {
+          "Px": 8,
+          "Py": 4
+        },
+        "200m": {
+          "Px": 6,
+          "Py": 6
         }
       },
       "dummy_rectangle": {
@@ -557,6 +591,10 @@
         }
       },
       "neuchatel": {
+        "400m": {
+          "Px": 5,
+          "Py": 5
+        },
         "200m": {
           "Px": 5,
           "Py": 6
@@ -572,6 +610,10 @@
       },
       "zug": {
         "100m": {
+          "Px": 5,
+          "Py": 7
+        },
+        "100m_lucerne_test":{
           "Px": 5,
           "Py": 7
         }

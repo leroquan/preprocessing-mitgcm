@@ -46,6 +46,7 @@ def write_data_config_files(data_config_path: str, initial_temperature: np.ndarr
     modify_arguments('!viscC2smag!', config.viscC2smag, data_config_path)
     modify_arguments('!viscAhGrid!', config.viscAhGrid, data_config_path)
     modify_arguments('!diffKhT!', config.diffKhT, data_config_path)
+    modify_arguments('!bottomDragQuadratic!', config.bottomDragQuadratic, data_config_path)
 
 
 def write_size_config_files(size_config_path: str, Px: int, Py: int, Nx: int, Ny: int, Nr: int, sNx: int, sNy: int):
