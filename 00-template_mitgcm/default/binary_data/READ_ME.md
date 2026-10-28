@@ -1,0 +1,1 @@
+Folder in which binary files are being generated with the post-processing code.

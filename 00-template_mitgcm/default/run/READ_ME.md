@@ -1,0 +1,1 @@
+Folder in which the MITgcm model will be run.

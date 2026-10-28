@@ -1,0 +1,1 @@
+Folder in which the MITgcm executable will be built.
